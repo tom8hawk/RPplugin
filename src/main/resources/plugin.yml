@@ -1,0 +1,20 @@
+name: RPplugin
+version: '${project.version}'
+main: ru.siaw.free.rpplugin.RPplugin
+author: tom8hawk
+website: siaw.ru
+
+commands:
+  rppl:
+    desription: Commands of the plugin itself/business trips
+  try:
+    desription: The /try command
+  me:
+    desription: The /me command
+permissions:
+  rppl.reload:
+    default: op
+  rppl.try:
+    default: op
+  rppl.me:
+    default: op
