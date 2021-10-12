@@ -3,8 +3,8 @@ package ru.siaw.free.rpplugin;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.siaw.free.rpplugin.function.OnlineBook;
-import ru.siaw.free.rpplugin.listener.Commands;
-import ru.siaw.free.rpplugin.utility.FileManager;
+import ru.siaw.free.rpplugin.command.Commands;
+import ru.siaw.free.rpplugin.data.FileManager;
 
 public class RPplugin extends JavaPlugin {
     private static RPplugin inst;
@@ -13,7 +13,7 @@ public class RPplugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        FileManager.checkFiles();
+        new FileManager().checkFiles();
         getCommand("rppl").setExecutor(new Commands());
         getCommand("try").setExecutor(new Commands());
         getCommand("me").setExecutor(new Commands());

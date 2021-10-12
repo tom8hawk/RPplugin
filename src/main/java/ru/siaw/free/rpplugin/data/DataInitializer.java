@@ -1,4 +1,4 @@
-package ru.siaw.free.rpplugin.utility;
+package ru.siaw.free.rpplugin.data;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,20 +11,28 @@ import java.io.File;
 import java.util.Objects;
 
 public class DataInitializer {
-    private static YamlConfiguration msg;
-    private static YamlConfiguration config;
+    private YamlConfiguration msg;
+    private YamlConfiguration config;
 
-    public static void initialize() {
+    private String tryMsg, trySuccess, tryUnsuccess;
+    private boolean tryEnabled, tryGlobal;
+    private int tryRadius;
+
+    private String meMsg;
+    private boolean meEnabled, meGlobal;
+    private int meRadius;
+
+    public void initialize() {
         File dataFolder = RPplugin.getInst().getDataFolder();
         config = YamlConfiguration.loadConfiguration(new File(dataFolder, "config.yml"));
         msg = YamlConfiguration.loadConfiguration(new File(dataFolder, "message.yml"));
 
-        Try.setTryEnabled((boolean) getConfigValue("try.enabled"));
-        Try.setTryGlobal((boolean) getConfigValue("try.globalChat"));
-        Try.setTryRadius((int) getConfigValue("try.radius"));
-        Try.setTryMsg(getMsgValue("try.message"));
-        Try.setSuccessful(getMsgValue("try.successfulMessage"));
-        Try.setUnsuccessful(getMsgValue("try.unsuccessfulMessage"));
+        tryEnabled = (boolean) getConfigValue("try.enabled");
+        tryGlobal = (boolean) getConfigValue("try.globalChat");
+        tryRadius = (int) getConfigValue("try.radius");
+        tryMsg = getMsgValue("try.message");
+        trySuccess = getMsgValue("try.successfulMessage");
+        tryUnsuccess =  getMsgValue("try.unsuccessfulMessage");
 
         Me.setMeEnabled((boolean) getConfigValue("me.enabled"));
         Me.setMeGlobal((boolean) getConfigValue("me.globalChat"));
@@ -37,9 +45,9 @@ public class DataInitializer {
         OnlineBook.setOffline(getMsgValue("onlineBook.offline"));
     }
 
-    public static Object getConfigValue(String path) { return config.get(path); }
+    private Object getConfigValue(String path) { return config.get(path); }
 
-    public static String getMsgValue(String path) {
+    private String getMsgValue(String path) {
         return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(msg.getString(path)));
     }
 }

@@ -1,40 +1,41 @@
-package ru.siaw.free.rpplugin.utility;
+package ru.siaw.free.rpplugin.utility
 
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Player
+import java.lang.StringBuilder
 
-public abstract class RpSender {
-    protected static boolean enabled, global;
-    protected static int radius;
-    protected static String message;
+class RpSender {
+    private var enabled = false
+    private var global = false
+    private var radius: Double = 0.0
+    private var message: String = ""
 
-    protected static void use(Player sender, String msg) {
+    fun use(sender: Player, msg: String) {
         if (enabled) {
-            String toSend = replace(sender.getDisplayName(), msg).trim();
-            if (global)
-                Print.toPlayers(toSend);
-            else
-                for (Entity entity : sender.getWorld().getNearbyEntities(sender.getLocation(), radius, radius, radius))
-                    if (entity instanceof Player)
-                        Print.toPlayer((Player) entity, toSend);
+            val toSend = replace(sender.displayName, msg).trim { it <= ' ' }
+            if (global) Print.toPlayers(toSend) else for (entity in sender.world.getNearbyEntities(sender.location, radius, radius, radius)) if (entity is Player) Print.toPlayer(entity, toSend)
         }
     }
 
-    private static String replace(String playerName, String playerMsg) {
-        StringBuilder newLine = new StringBuilder(message);
-
-        String word = "<player>";
+    private fun replace(playerName: String, playerMsg: String): String {
+        val newLine = StringBuilder(message)
+        var word = "%player"
         if (message.contains(word)) {
-            int index = newLine.indexOf(word);
-            newLine.replace(index, index + 8, playerName);
+            val index = newLine.indexOf(word)
+            newLine.replace(index, index + 7, playerName)
         }
-
-        word = "<message>";
+        word = "%message"
         if (message.contains(word)) {
-            int index = newLine.indexOf(word);
-            newLine.replace(index, index + 9, playerMsg);
+            val index = newLine.indexOf(word)
+            newLine.replace(index, index + 8, playerMsg)
         }
-
-        return newLine.toString();
+        return newLine.toString()
     }
+
+    fun setMeEnabled(value: Boolean) { enabled = value }
+
+    fun setMeGlobal(value: Boolean) { global = value }
+
+    fun setMeRadius(value: Double) { radius = value }
+
+    fun setMeMsg(value: String) { message = value }
 }

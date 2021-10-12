@@ -1,20 +1,30 @@
-package ru.siaw.free.rpplugin.utility;
+package ru.siaw.free.rpplugin.utility
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Player
+import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 
-public class Print {
-    public static void msgToConsole(String msg) { System.out.println(ChatColor.GREEN + msg); }
+object Print {
+    @JvmStatic
+    fun msgToConsole(msg: String) {
+        println(ChatColor.GREEN.toString() + msg)
+    }
 
-    public static void infoToConsole(String msg) { System.out.println(ChatColor.YELLOW + msg); }
+    @JvmStatic
+    fun infoToConsole(msg: String) {
+        println(ChatColor.YELLOW.toString() + msg)
+    }
 
-    public static void errToConsole(String msg) { System.out.println(ChatColor.RED + msg); }
+    @JvmStatic
+    fun errToConsole(msg: String) {
+        println(ChatColor.RED.toString() + msg)
+    }
 
-    public static void toPlayer(Player p, String msg) { p.sendMessage(msg); }
+    fun toPlayer(p: Player, msg: String?) {
+        p.sendMessage(msg)
+    }
 
-    public static void toPlayers(String msg) {
-        for (Player p : Bukkit.getOnlinePlayers())
-            toPlayer(p, msg);
+    fun toPlayers(msg: String?) {
+        for (p in Bukkit.getOnlinePlayers()) toPlayer(p, msg)
     }
 }

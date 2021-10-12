@@ -1,7 +1,8 @@
-package ru.siaw.free.rpplugin.utility;
+package ru.siaw.free.rpplugin.data;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import ru.siaw.free.rpplugin.RPplugin;
+import ru.siaw.free.rpplugin.utility.Print;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,10 +14,10 @@ import java.nio.file.StandardCopyOption;
 import java.util.Set;
 
 public class FileManager {
-    private static final RPplugin plugin = RPplugin.getInst();
-    private static final File dataFolder = plugin.getDataFolder();
+    private final RPplugin plugin = RPplugin.getInst();
+    private final File dataFolder = plugin.getDataFolder();
 
-    public static void checkFiles() {
+    public void checkFiles() {
         for (byte fileNumber = 0; fileNumber < 2; fileNumber++) {
             String fileName = fileNumber == 0 ? "message.yml" : "config.yml";
             File file = new File(dataFolder, fileName);
@@ -36,7 +37,7 @@ public class FileManager {
         DataInitializer.initialize();
     }
 
-    private static void integrityCheck(File file, String fileName) throws IOException {
+    private void integrityCheck(File file, String fileName) throws IOException {
         YamlConfiguration oldYMLFile = YamlConfiguration.loadConfiguration(file);
         Set<String> oldFileKeys = oldYMLFile.getKeys(true);
 
@@ -65,12 +66,12 @@ public class FileManager {
         Files.delete(tempPath);
     }
 
-    private static File inputStreamToFile(InputStream file, String tempFileName, Path tempPath) throws IOException {
+    private File inputStreamToFile(InputStream file, String tempFileName, Path tempPath) throws IOException {
         Files.copy(file, tempPath, StandardCopyOption.REPLACE_EXISTING);
         return new File(dataFolder, tempFileName);
     }
 
-    private static void storeOldFile(String fileName) throws IOException {
+    private void storeOldFile(String fileName) throws IOException {
         Print.infoToConsole("We saved the file in the `OutdatedFiles` folder before making changes to the file.");
 
         File outdatedFolder = new File(dataFolder, "/OutdatedFiles");

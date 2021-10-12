@@ -14,7 +14,7 @@ commands:
 permissions:
   rppl.reload:
     default: op
-  rppl.try:
+  try.use:
     default: op
-  rppl.me:
+  me.use:
     default: op
