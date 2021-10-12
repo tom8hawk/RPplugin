@@ -4,38 +4,32 @@ import org.bukkit.entity.Player
 import java.lang.StringBuilder
 
 class RpSender {
-    private var enabled = false
     private var global = false
     private var radius: Double = 0.0
-    private var message: String = ""
 
-    fun use(sender: Player, msg: String) {
-        if (enabled) {
-            val toSend = replace(sender.displayName, msg).trim { it <= ' ' }
-            if (global) Print.toPlayers(toSend) else for (entity in sender.world.getNearbyEntities(sender.location, radius, radius, radius)) if (entity is Player) Print.toPlayer(entity, toSend)
-        }
+    fun use(sender: Player, msg: String, original: String) {
+        val toSend = replace(sender.displayName, msg, original).trim()
+        if (global) Print.toPlayers(toSend) else for (entity in sender.world.getNearbyEntities(sender.location, radius, radius, radius)) if (entity is Player) Print.toPlayer(entity, toSend)
     }
 
-    private fun replace(playerName: String, playerMsg: String): String {
-        val newLine = StringBuilder(message)
+    private fun replace(playerName: String, playerMsg: String, original: String): String {
+        val newLine = StringBuilder(original)
+
         var word = "%player"
-        if (message.contains(word)) {
+        if (original.contains(word)) {
             val index = newLine.indexOf(word)
             newLine.replace(index, index + 7, playerName)
         }
+
         word = "%message"
-        if (message.contains(word)) {
+        if (original.contains(word)) {
             val index = newLine.indexOf(word)
             newLine.replace(index, index + 8, playerMsg)
         }
+
         return newLine.toString()
     }
 
-    fun setMeEnabled(value: Boolean) { enabled = value }
-
-    fun setMeGlobal(value: Boolean) { global = value }
-
-    fun setMeRadius(value: Double) { radius = value }
-
-    fun setMeMsg(value: String) { message = value }
+    fun setGlobal(value: Boolean) { global = value }
+    fun setRadius(value: Double) { radius = value }
 }

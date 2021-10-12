@@ -6,31 +6,34 @@ import ru.siaw.free.rpplugin.utility.RpSender;
 import java.util.Random;
 
 public class Try {
-    private boolean tryEnabled, tryGlobal;
-    private int tryRadius;
-    private String successful, unsuccessful, tryMsg;
+    private static boolean enabled = false;
+    private static String successful, unsuccessful, original;
+    private static final RpSender sendUtil = new RpSender();
 
-    public void send(Player sender, String msg) {
-        
-        StringBuilder newMsg = new StringBuilder(tryMsg);
+    public static void send(Player sender, String msg) {
+        if (!enabled)
+            return;
+
+        StringBuilder newMsg = new StringBuilder(original);
+
         String word = "%luckmsg";
-        if (tryMsg.contains(word)) {
-            int index = tryMsg.indexOf(word);
+        if (original.contains(word)) {
+            int index = original.indexOf(word);
             newMsg.replace(index, index + 8, luckMsg());
         }
-        message = newMsg.toString();
-
-        use(sender, msg);
+        
+        sendUtil.use(sender, msg, newMsg.toString());
     }
 
-    private String luckMsg() {
+    private static String luckMsg() {
         return new Random().nextInt(2) == 1 ? successful : unsuccessful;
     }
 
-    public void setTryEnabled(boolean value) { tryEnabled = value; }
-    public void setTryGlobal(boolean value) { tryGlobal = value; }
-    public void setTryRadius(int value) { tryRadius = value; }
-    public void setTryMsg(String value) { tryMsg = value; }
-    public void setSuccessful(String value) { successful = value; }
-    public void setUnsuccessful(String value) { unsuccessful = value; }
+    public static void setTryEnabled(boolean value) { enabled = value; }
+    public static void setTrySuccessful(String value) { successful = value; }
+    public static void setTryUnsuccessful(String value) { unsuccessful = value; }
+    public static void setTryOriginal(String value) { original = value; }
+
+    public static void setTryGlobal(boolean value) { sendUtil.setGlobal(value); }
+    public static void setTryRadius(int value) { sendUtil.setRadius(value); }
 }

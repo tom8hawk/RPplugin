@@ -14,30 +14,22 @@ public class DataInitializer {
     private YamlConfiguration msg;
     private YamlConfiguration config;
 
-    private String tryMsg, trySuccess, tryUnsuccess;
-    private boolean tryEnabled, tryGlobal;
-    private int tryRadius;
-
-    private String meMsg;
-    private boolean meEnabled, meGlobal;
-    private int meRadius;
-
     public void initialize() {
         File dataFolder = RPplugin.getInst().getDataFolder();
         config = YamlConfiguration.loadConfiguration(new File(dataFolder, "config.yml"));
         msg = YamlConfiguration.loadConfiguration(new File(dataFolder, "message.yml"));
 
-        tryEnabled = (boolean) getConfigValue("try.enabled");
-        tryGlobal = (boolean) getConfigValue("try.globalChat");
-        tryRadius = (int) getConfigValue("try.radius");
-        tryMsg = getMsgValue("try.message");
-        trySuccess = getMsgValue("try.successfulMessage");
-        tryUnsuccess =  getMsgValue("try.unsuccessfulMessage");
+        Try.setTryEnabled((boolean) getConfigValue("try.enabled"));
+        Try.setTryGlobal((boolean) getConfigValue("try.globalChat"));
+        Try.setTryRadius((int) getConfigValue("try.radius"));
+        Try.setTryOriginal(getMsgValue("try.message"));
+        Try.setTrySuccessful(getMsgValue("try.successfulMessage"));
+        Try.setTryUnsuccessful(getMsgValue("try.unsuccessfulMessage"));
 
         Me.setMeEnabled((boolean) getConfigValue("me.enabled"));
         Me.setMeGlobal((boolean) getConfigValue("me.globalChat"));
         Me.setMeRadius((int) getConfigValue("me.radius"));
-        Me.setMeMsg(getMsgValue("me.message"));
+        Me.setMeOriginal(getMsgValue("me.message"));
 
         OnlineBook.setBookEnabled((boolean) getConfigValue("onlineBook.enabled"));
         OnlineBook.setBookReplace((boolean) getConfigValue("onlineBook.reset"));

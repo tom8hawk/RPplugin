@@ -19,11 +19,11 @@ public class Commands implements CommandExecutor {
                 switch (label.toLowerCase()) {
                     case "try":
                         if ((sender.hasPermission("try.use") || sender.isOp()))
-                            new Try().send(player, args[0]);
+                            Try.send(player, args[0]);
                         return false;
                     case "me":
                         if ((sender.hasPermission("me.use") || sender.isOp()))
-                            new Me().send(player, args[0]);
+                            Me.send(player, args[0]);
                         return false;
                 }
             }

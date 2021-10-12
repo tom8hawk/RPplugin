@@ -34,7 +34,7 @@ public class FileManager {
                     e.printStackTrace();
                 }
         }
-        DataInitializer.initialize();
+        new DataInitializer().initialize();
     }
 
     private void integrityCheck(File file, String fileName) throws IOException {
