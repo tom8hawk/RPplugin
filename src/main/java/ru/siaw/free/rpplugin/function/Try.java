@@ -14,15 +14,15 @@ public class Try {
         if (!enabled)
             return;
 
-        StringBuilder newMsg = new StringBuilder(original);
+        StringBuilder changed = new StringBuilder(original);
 
         String word = "%luckmsg";
         if (original.contains(word)) {
             int index = original.indexOf(word);
-            newMsg.replace(index, index + 8, luckMsg());
+            changed.replace(index, index + 8, luckMsg());
         }
         
-        sendUtil.use(sender, msg, newMsg.toString());
+        sendUtil.use(sender, msg, changed.toString());
     }
 
     private static String luckMsg() {
