@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OnlineBook implements Listener {
+    private static final List<OfflinePlayer> players = Arrays.asList(Bukkit.getOfflinePlayers());
     private static boolean enabled, reset;
     private static String online, offline;
 
@@ -40,20 +41,39 @@ public class OnlineBook implements Listener {
         }
     }
 
-    private static final List<OfflinePlayer> players = Arrays.asList(Bukkit.getOfflinePlayers());
     private static String extractAuthor(BookMeta meta) {
         String author = meta.getAuthor();
         for (OfflinePlayer p : players) {
             String name = p.getName();
-            if (author.contains(name)) { author = name; break; }
+            if (author.contains(name)) {
+                author = name;
+                break;
+            }
         }
         return author;
+    }
+
+    public static void setOnline(String value) {
+        online = value;
+    }
+
+    public static void setOffline(String value) {
+        offline = value;
+    }
+
+    public static void setBookEnabled(boolean value) {
+        enabled = value;
+    }
+
+    public static void setBookReplace(boolean value) {
+        reset = value;
     }
 
     // присоединение к серверу
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        for (ItemStack item : e.getPlayer().getInventory()) update(item); // проходимся циклом по вещам и обновляем книги
+        for (ItemStack item : e.getPlayer().getInventory())
+            update(item); // проходимся циклом по вещам и обновляем книги
     }
 
     // любые действия с книгами
@@ -73,7 +93,6 @@ public class OnlineBook implements Listener {
             for (ItemStack item : player.getInventory()) update(item);
         }
     }
-
 
     // подбор предмета
     @EventHandler
@@ -103,13 +122,9 @@ public class OnlineBook implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
         if (!e.getPlayer().isSneaking() && e.getAction() != Action.RIGHT_CLICK_AIR &&
-                e.getAction() != Action.RIGHT_CLICK_BLOCK) return; // проверяем, сидит ли игрок на шифте, и если "действие" - правый клик
+                e.getAction() != Action.RIGHT_CLICK_BLOCK)
+            return; // проверяем, сидит ли игрок на шифте, и если "действие" - правый клик
 
         update(e.getItem());
     }
-
-    public static void setOnline(String value) { online = value; }
-    public static void setOffline(String value) { offline = value; }
-    public static void setBookEnabled(boolean value) { enabled = value; }
-    public static void setBookReplace(boolean value) { reset = value; }
 }

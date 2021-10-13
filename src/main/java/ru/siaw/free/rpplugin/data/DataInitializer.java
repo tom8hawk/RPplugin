@@ -37,7 +37,9 @@ public class DataInitializer {
         OnlineBook.setOffline(getMsgValue("onlineBook.offline"));
     }
 
-    private Object getConfigValue(String path) { return config.get(path); }
+    private Object getConfigValue(String path) {
+        return config.get(path);
+    }
 
     private String getMsgValue(String path) {
         return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(msg.getString(path)));

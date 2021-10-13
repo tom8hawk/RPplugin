@@ -5,9 +5,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import ru.siaw.free.rpplugin.data.FileManager;
 import ru.siaw.free.rpplugin.function.Me;
 import ru.siaw.free.rpplugin.function.Try;
-import ru.siaw.free.rpplugin.data.FileManager;
 import ru.siaw.free.rpplugin.utility.Print;
 
 public class Commands implements CommandExecutor {

@@ -2,11 +2,11 @@
 # Настройка сообщений плагина
 #
 try:
-  message: '&e* &f%player %message %luckmsg' #Everything in <> will be replaced by the plugin automatically. player - the sender of the command, message - the message, luckmsg - "Successfully"/"Unsuccessful" message
+  message: '%player %message %luckmsg' #Everything in <> will be replaced by the plugin automatically. player - the sender of the command, message - the message, luckmsg - "Successfully"/"Unsuccessful" message
   successfulMessage: '&a[Удачно]'
   unsuccessfulMessage: '&c[Неудачно]'
 onlineBook:
   online: '&a(онлайн)'
   offline: '&c(оффлайн)'
 me:
-  message: '&f* %player %message'
+  message: '&e* &f%player %message'

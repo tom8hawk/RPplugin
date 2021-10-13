@@ -6,9 +6,9 @@ import ru.siaw.free.rpplugin.utility.RpSender;
 import java.util.Random;
 
 public class Try {
+    private static final RpSender sendUtil = new RpSender();
     private static boolean enabled = false;
     private static String successful, unsuccessful, original;
-    private static final RpSender sendUtil = new RpSender();
 
     public static void send(Player sender, String msg) {
         if (!enabled)
@@ -21,7 +21,7 @@ public class Try {
             int index = original.indexOf(word);
             changed.replace(index, index + 8, luckMsg());
         }
-        
+
         sendUtil.use(sender, msg, changed.toString());
     }
 
@@ -29,11 +29,27 @@ public class Try {
         return new Random().nextInt(2) == 1 ? successful : unsuccessful;
     }
 
-    public static void setTryEnabled(boolean value) { enabled = value; }
-    public static void setTrySuccessful(String value) { successful = value; }
-    public static void setTryUnsuccessful(String value) { unsuccessful = value; }
-    public static void setTryOriginal(String value) { original = value; }
+    public static void setTryEnabled(boolean value) {
+        enabled = value;
+    }
 
-    public static void setTryGlobal(boolean value) { sendUtil.setGlobal(value); }
-    public static void setTryRadius(int value) { sendUtil.setRadius(value); }
+    public static void setTrySuccessful(String value) {
+        successful = value;
+    }
+
+    public static void setTryUnsuccessful(String value) {
+        unsuccessful = value;
+    }
+
+    public static void setTryOriginal(String value) {
+        original = value;
+    }
+
+    public static void setTryGlobal(boolean value) {
+        sendUtil.setGlobal(value);
+    }
+
+    public static void setTryRadius(int value) {
+        sendUtil.setRadius(value);
+    }
 }
