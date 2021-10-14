@@ -8,7 +8,7 @@ public class RpSender {
     private int radius;
 
     public void use(Player sender, String msg, String original) {
-        String toSend = replace(sender.getDisplayName(), msg, original).trim();
+        String toSend = replace(sender.getDisplayName().trim(), msg, original);
         if (global)
             Print.toPlayers(toSend);
         else

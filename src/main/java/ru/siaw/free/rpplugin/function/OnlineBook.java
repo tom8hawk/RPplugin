@@ -31,7 +31,7 @@ public class OnlineBook implements Listener {
         if (item != null && item.getType() == Material.WRITTEN_BOOK) { // проверяем подписанная ли это книга
             BookMeta bookMeta = (BookMeta) item.getItemMeta(); // Получаем мету
             if (bookMeta != null && bookMeta.getAuthor() != null) {
-                String authorName = extractAuthor(bookMeta); // достаем имя автора
+                String authorName = extractAuthor(bookMeta).trim(); // достаем имя автора
                 if (enabled)
                     bookMeta.setAuthor(authorName + " " + (Bukkit.getPlayer(authorName) != null ? online : offline)); // устанавливаем автора
                 else if (reset)
@@ -51,22 +51,6 @@ public class OnlineBook implements Listener {
             }
         }
         return author;
-    }
-
-    public static void setOnline(String value) {
-        online = value;
-    }
-
-    public static void setOffline(String value) {
-        offline = value;
-    }
-
-    public static void setBookEnabled(boolean value) {
-        enabled = value;
-    }
-
-    public static void setBookReplace(boolean value) {
-        reset = value;
     }
 
     // присоединение к серверу
@@ -126,5 +110,21 @@ public class OnlineBook implements Listener {
             return; // проверяем, сидит ли игрок на шифте, и если "действие" - правый клик
 
         update(e.getItem());
+    }
+
+    public static void setOnline(String value) {
+        online = value;
+    }
+
+    public static void setOffline(String value) {
+        offline = value;
+    }
+
+    public static void setBookEnabled(boolean value) {
+        enabled = value;
+    }
+
+    public static void setBookReplace(boolean value) {
+        reset = value;
     }
 }
