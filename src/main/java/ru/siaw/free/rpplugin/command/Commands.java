@@ -15,17 +15,14 @@ public class Commands implements CommandExecutor {
         boolean isConsole = sender instanceof ConsoleCommandSender;
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (args.length == 1) {
-                switch (label.toLowerCase()) {
-                    case "try":
-                        if ((sender.hasPermission("try.use") || sender.isOp()))
-                            Try.send(player, args[0]);
-                        return false;
-                    case "me":
-                        if ((sender.hasPermission("me.use") || sender.isOp()))
-                            Me.send(player, args[0]);
-                        return false;
-                }
+            String lowerCase = label.toLowerCase();
+
+            if (lowerCase.equals("try") && (sender.hasPermission("try.use") || sender.isOp())) {
+                Try.send(player, extractMessage(args));
+                return false;
+            } else if (lowerCase.equals("me") && (sender.hasPermission("me.use") || sender.isOp())) {
+                Me.send(player, extractMessage(args));
+                return false;
             }
         }
         if (label.equals("rppl")) {
@@ -38,5 +35,12 @@ public class Commands implements CommandExecutor {
             }
         }
         return false;
+    }
+
+    private String extractMessage(String[] message) {
+        StringBuilder changed = new StringBuilder();
+        for (String word : message)
+            changed.append(word).append(" ");
+        return changed.toString();
     }
 }

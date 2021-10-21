@@ -8,7 +8,7 @@ public class RpSender {
     private int radius;
 
     public void use(Player sender, String msg, String original) {
-        String toSend = replace(sender.getDisplayName().trim(), msg, original);
+        String toSend = replace(sender.getDisplayName(), msg, original);
         if (global)
             Print.toPlayers(toSend);
         else
@@ -23,13 +23,13 @@ public class RpSender {
         String word = "%player";
         if (original.contains(word)) {
             int index = newLine.indexOf(word);
-            newLine.replace(index, index + 7, playerName);
+            newLine.replace(index, index + 7, playerName.trim());
         }
 
         word = "%message";
         if (original.contains(word)) {
             int index = newLine.indexOf(word);
-            newLine.replace(index, index + 8, playerMsg);
+            newLine.replace(index, index + 8, playerMsg.trim());
         }
 
         return newLine.toString();
