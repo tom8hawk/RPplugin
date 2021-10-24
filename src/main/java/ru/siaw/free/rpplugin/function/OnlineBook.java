@@ -15,7 +15,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-import ru.siaw.free.rpplugin.RPplugin;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,28 +22,25 @@ import java.util.List;
 public class OnlineBook implements Listener {
     private static String online, offline;
     private static boolean enabled, reset;
-    private final RPplugin plugin = RPplugin.getInst();
     private static final List<OfflinePlayer> players = Arrays.asList(Bukkit.getOfflinePlayers());
 
     private void update(ItemStack item) {
         if (item != null && item.getType() == Material.WRITTEN_BOOK) { // проверяем подписанная ли это книга
             BookMeta book = (BookMeta) item.getItemMeta(); // Получаем мету
             if (enabled && book != null && book.getAuthor() != null) {
-                Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                    @Override
+                new Thread(new Runnable() {
                     public synchronized void run() {
                         String author = book.getAuthor();
                         for (OfflinePlayer p : players) { // проходим по всем игрокам сервера
                             String name = p.getName();
                             if (author.contains(name)) { // находим точный ник автора книги
-                                book.setAuthor(name + (!reset ? " " +
-                                        (Bukkit.getPlayer(name) != null ? online : offline) : "")); // устанавливаем автора
+                                book.setAuthor(name + (!reset ? " " + (Bukkit.getPlayer(name) != null ? online : offline) : "")); // устанавливаем автора
+                                item.setItemMeta(book); // устанавливаем мету
                                 break;
                             }
                         }
-                        Bukkit.getScheduler().runTask(RPplugin.getInst(), () -> item.setItemMeta(book)); // устанавливаем мету
                     }
-                });
+                }).start();
             }
         }
     }
