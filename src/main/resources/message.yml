@@ -10,3 +10,5 @@ onlineBook:
   offline: '&c(оффлайн)'
 me:
   message: '&e* &f%player %message'
+hideTags:
+  message: '%name'

@@ -9,3 +9,5 @@ me:
 onlineBook:
   enabled: true
   reset: false
+hideTags:
+  enabled: true

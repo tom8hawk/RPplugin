@@ -3,6 +3,7 @@ package ru.siaw.free.rpplugin.data;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import ru.siaw.free.rpplugin.RPplugin;
+import ru.siaw.free.rpplugin.function.HideTags;
 import ru.siaw.free.rpplugin.function.Me;
 import ru.siaw.free.rpplugin.function.OnlineBook;
 import ru.siaw.free.rpplugin.function.Try;
@@ -18,6 +19,9 @@ public class DataInitializer {
         File dataFolder = RPplugin.getInst().getDataFolder();
         config = YamlConfiguration.loadConfiguration(new File(dataFolder, "config.yml"));
         msg = YamlConfiguration.loadConfiguration(new File(dataFolder, "message.yml"));
+
+        HideTags.setEnabled((boolean) getConfigValue("hideTags.enabled"));
+        HideTags.setMessage(getMsgValue("hideTags.message"));
 
         Try.setTryEnabled((boolean) getConfigValue("try.enabled"));
         Try.setTryGlobal((boolean) getConfigValue("try.globalChat"));
