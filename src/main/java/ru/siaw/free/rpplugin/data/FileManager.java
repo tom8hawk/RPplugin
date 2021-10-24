@@ -51,15 +51,15 @@ public class FileManager {
             Print.errToConsole("A mismatch of your file " + fileName + " with the current one was found. Your file will be overwritten with your parameters saved.");
 
             storeOldFile(fileName);
-            for (String key : newFileKeys) {
+            newFileKeys.forEach(key -> {
                 if (!oldFileKeys.contains(key) && key.contains(".")) {
                     oldYMLFile.set(key, newYMLFile.get(key));
                 }
-            }
-            for (String key : oldFileKeys) {
+            });
+            oldFileKeys.forEach(key -> {
                 if (!newFileKeys.contains(key))
                     oldYMLFile.set(key, null);
-            }
+            });
             oldYMLFile.save(file);
             Print.msgToConsole(fileName + " updated and now contains new keys.");
         }

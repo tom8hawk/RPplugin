@@ -31,14 +31,14 @@ public class OnlineBook implements Listener {
                 new Thread(new Runnable() {
                     public synchronized void run() {
                         String author = book.getAuthor();
-                        for (OfflinePlayer p : players) { // проходим по всем игрокам сервера
+                        players.forEach(p -> {
                             String name = p.getName();
                             if (author.contains(name)) { // находим точный ник автора книги
                                 book.setAuthor(name + (!reset ? " " + (Bukkit.getPlayer(name) != null ? online : offline) : "")); // устанавливаем автора
                                 item.setItemMeta(book); // устанавливаем мету
-                                break;
+                                return;
                             }
-                        }
+                        });
                     }
                 }).start();
             }

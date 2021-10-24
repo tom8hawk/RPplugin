@@ -22,7 +22,6 @@ public class Print {
     }
 
     public static void toPlayers(String msg) {
-        for (Player p : Bukkit.getOnlinePlayers())
-            toPlayer(p, msg);
+        Bukkit.getOnlinePlayers().forEach(p -> toPlayer(p, msg));;
     }
 }
