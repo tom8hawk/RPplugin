@@ -11,27 +11,23 @@ import ru.siaw.free.rpplugin.function.Try;
 import ru.siaw.free.rpplugin.utility.Print;
 
 public class Commands implements CommandExecutor {
+    private static boolean usePerms;
+
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        boolean isConsole = sender instanceof ConsoleCommandSender;
         if (sender instanceof Player) {
             Player player = (Player) sender;
             String lowerCase = label.toLowerCase();
 
-            if (lowerCase.equals("try") && (sender.hasPermission("try.use") || sender.isOp())) {
+            if (lowerCase.equals("try") && (!usePerms || sender.hasPermission("try.use") || sender.isOp()))
                 Try.send(player, extractMessage(args));
-                return false;
-            } else if (lowerCase.equals("me") && (sender.hasPermission("me.use") || sender.isOp())) {
+            else if (lowerCase.equals("me") && (!usePerms || sender.hasPermission("me.use") || sender.isOp()))
                 Me.send(player, extractMessage(args));
-                return false;
-            }
         }
+        boolean isConsole = sender instanceof ConsoleCommandSender;
         if (label.equals("rppl")) {
-            if (args.length == 1) {
-                if (args[0].equals("reload") && (sender.hasPermission("rppl.reload") || sender.isOp() || isConsole)) {
-                    new FileManager().checkFiles();
-                    Print.msgToConsole("The configuration has been reset.");
-                    return false;
-                }
+            if (args[0].equals("reload") && (sender.hasPermission("rppl.reload") || sender.isOp() || isConsole)) {
+                new FileManager().checkFiles();
+                Print.msgToConsole("The configuration has been reset.");
             }
         }
         return false;
@@ -42,5 +38,9 @@ public class Commands implements CommandExecutor {
         for (String word : message)
             changed.append(word).append(" ");
         return changed.toString();
+    }
+
+    public static void setUsePerms(boolean value) {
+        usePerms = value;
     }
 }

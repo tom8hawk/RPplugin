@@ -7,13 +7,9 @@ import java.util.Random;
 
 public class Try {
     private static final RpSender sendUtil = new RpSender();
-    private static boolean enabled = false;
     private static String successful, unsuccessful, original;
 
     public static void send(Player sender, String msg) {
-        if (!enabled)
-            return;
-
         StringBuilder changed = new StringBuilder(original);
 
         String word = "%luckmsg";
@@ -27,10 +23,6 @@ public class Try {
 
     private static String luckMsg() {
         return new Random().nextInt(2) == 1 ? successful : unsuccessful;
-    }
-
-    public static void setTryEnabled(boolean value) {
-        enabled = value;
     }
 
     public static void setTrySuccessful(String value) {

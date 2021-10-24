@@ -6,14 +6,9 @@ import ru.siaw.free.rpplugin.utility.RpSender;
 public class Me {
     private static final RpSender sendUtil = new RpSender();
     private static String original;
-    private static boolean enabled = false;
 
     public static void send(Player sender, String msg) {
-        if (enabled) sendUtil.use(sender, msg, original);
-    }
-
-    public static void setMeEnabled(boolean value) {
-        enabled = value;
+        sendUtil.use(sender, msg, original);
     }
 
     public static void setMeOriginal(String value) {
