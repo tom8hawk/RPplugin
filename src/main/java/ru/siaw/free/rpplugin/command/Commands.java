@@ -12,25 +12,37 @@ import ru.siaw.free.rpplugin.utility.Print;
 
 public class Commands implements CommandExecutor {
     private static boolean usePerms;
+    private static String noPermsMsg, unknown;
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            String lowerCase = label.toLowerCase();
+        String lowerCase = label.toLowerCase();
 
-            if (lowerCase.equals("try") && (!usePerms || sender.hasPermission("try.use") || sender.isOp()))
-                Try.send(player, extractMessage(args));
-            else if (lowerCase.equals("me") && (!usePerms || sender.hasPermission("me.use") || sender.isOp()))
-                Me.send(player, extractMessage(args));
-        }
-        boolean isConsole = sender instanceof ConsoleCommandSender;
-        if (label.equals("rppl")) {
-            if (args[0].equals("reload") && (sender.hasPermission("rppl.reload") || sender.isOp() || isConsole)) {
-                new FileManager().checkFiles();
-                Print.msgToConsole("The configuration has been reset.");
+        if (label.equals("rppl") && args[0].equals("reload") && (sender instanceof ConsoleCommandSender || checkPerm(sender, "rppl.reload"))) {
+            new FileManager().checkFiles();
+            Print.msgToConsole("The configuration has been reset.");
+        } else if (sender instanceof Player) {
+            Player player = (Player) sender;
+            switch (lowerCase) {
+                case "try":
+                    if (checkPerm(sender, "try.use"))
+                        Try.send(player, extractMessage(args));
+                    break;
+                case "me":
+                    if (checkPerm(sender, "me.use"))
+                        Me.send(player, extractMessage(args));
+                    break;
+                default:
+                    Print.toPlayer(player, unknown);
             }
         }
         return false;
+    }
+
+    private boolean checkPerm(CommandSender sender, String perm) {
+        boolean hasPerm = !usePerms || sender.hasPermission(perm) || sender.isOp();
+        if (!hasPerm && sender instanceof Player) Print.toPlayer((Player) sender, noPermsMsg);
+
+        return hasPerm;
     }
 
     private String extractMessage(String[] message) {
@@ -42,5 +54,13 @@ public class Commands implements CommandExecutor {
 
     public static void setUsePerms(boolean value) {
         usePerms = value;
+    }
+
+    public static void setNoPermsMsg(String value) {
+        noPermsMsg = value;
+    }
+
+    public static void setUnknown(String value) {
+        unknown = value;
     }
 }

@@ -1,12 +1,13 @@
 try:
-  globalChat: true # Will messages from try to be sent to all players?
-  radius: 100 # The radius of sending messages (only if the "global_chat" parameter = true)
+  globalChat: true # Будет ли сообщение отправляться всем игрокам?
+  radius: 100 # Радиус отправки сообщения (только если параметр "global_chat" = true)
 me:
   globalChat: true
   radius: 100
 onlineBook:
+  enabled: true
   reset: false
 hideTags:
   enabled: true
 
-perms.use: false # Whether to check whether the player has the right to use rp commands
+perms.check: false # Нужно ли проверять, имеет ли игрок право использовать рп-команды

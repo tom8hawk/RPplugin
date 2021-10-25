@@ -20,15 +20,12 @@ public class RpSender {
     private String replace(String playerName, String playerMsg, String original) {
         StringBuilder newLine = new StringBuilder(original);
 
-        String word = "%player";
-        if (original.contains(word)) {
-            int index = newLine.indexOf(word);
+        if (original.contains("%player")) {
+            int index = newLine.indexOf("%player");
             newLine.replace(index, index + 7, playerName.trim());
         }
-
-        word = "%message";
-        if (original.contains(word)) {
-            int index = newLine.indexOf(word);
+        if (original.contains("%message")) {
+            int index = newLine.indexOf("%message");
             newLine.replace(index, index + 8, playerMsg.trim());
         }
 

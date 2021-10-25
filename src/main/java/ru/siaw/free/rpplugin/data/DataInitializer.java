@@ -21,7 +21,9 @@ public class DataInitializer {
         config = YamlConfiguration.loadConfiguration(new File(dataFolder, "config.yml"));
         msg = YamlConfiguration.loadConfiguration(new File(dataFolder, "message.yml"));
 
-        Commands.setUsePerms((boolean) getConfigValue("perms.use"));
+        Commands.setUsePerms((boolean) getConfigValue("perms.check"));
+        Commands.setNoPermsMsg(getMsgValue("system.noPerms"));
+        Commands.setUnknown(getMsgValue("system.unknownMsg"));
 
         HideTags.setEnabled((boolean) getConfigValue("hideTags.enabled"));
         HideTags.setMessage(getMsgValue("hideTags.message"));
@@ -36,6 +38,7 @@ public class DataInitializer {
         Me.setMeRadius((int) getConfigValue("me.radius"));
         Me.setMeOriginal(getMsgValue("me.message"));
 
+        OnlineBook.setBookEnabled((boolean) getConfigValue("onlineBook.enabled"));
         OnlineBook.setBookReplace((boolean) getConfigValue("onlineBook.reset"));
         OnlineBook.setOnline(getMsgValue("onlineBook.online"));
         OnlineBook.setOffline(getMsgValue("onlineBook.offline"));

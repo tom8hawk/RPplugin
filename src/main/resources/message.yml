@@ -1,8 +1,9 @@
 #
 # Настройка сообщений плагина
 #
+
 try:
-  message: '%player %message %luckmsg' #Everything in <> will be replaced by the plugin automatically. player - the sender of the command, message - the message, luckmsg - "Successfully"/"Unsuccessful" message
+  message: '%player %message %luckmsg' # Все, что начинается с %, будет заменено плагином. player - исполнитель комманды, message - сообщение, luckmsg - сообщение "Успешно"/"Неудачно"
   successfulMessage: '&a[Удачно]'
   unsuccessfulMessage: '&c[Неудачно]'
 onlineBook:
@@ -12,3 +13,7 @@ me:
   message: '&e* &f%player %message'
 hideTags:
   message: '%name'
+
+system: # Настройка системных сообщений
+  noPerms: '&cУ тебя недостаточно прав для этого'
+  unknownMsg: '&eЯ не знаю такую комманду: (%cmd)'

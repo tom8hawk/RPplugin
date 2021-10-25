@@ -25,22 +25,24 @@ public class OnlineBook implements Listener {
     private static final List<OfflinePlayer> players = Arrays.asList(Bukkit.getOfflinePlayers());
 
     private void update(ItemStack item) {
-        if (item != null && item.getType() == Material.WRITTEN_BOOK) { // проверяем подписанная ли это книга
-            BookMeta book = (BookMeta) item.getItemMeta(); // Получаем мету
-            if (enabled && book != null && book.getAuthor() != null) {
-                new Thread(new Runnable() {
-                    public synchronized void run() {
-                        String author = book.getAuthor();
-                        players.forEach(p -> {
-                            String name = p.getName();
-                            if (author.contains(name)) { // находим точный ник автора книги
-                                book.setAuthor(name + (!reset ? " " + (Bukkit.getPlayer(name) != null ? online : offline) : "")); // устанавливаем автора
-                                item.setItemMeta(book); // устанавливаем мету
-                                return;
-                            }
-                        });
-                    }
-                }).start();
+        if (enabled && item != null && item.getType() == Material.WRITTEN_BOOK) { // проверяем подписанная ли это книга
+            BookMeta book = (BookMeta) item.getItemMeta(); // получаем мету
+            if (book != null) {
+                String bookAuthor = book.getAuthor();
+                if (bookAuthor != null) {
+                    new Thread(new Runnable() {
+                        public synchronized void run() {
+                            players.forEach(p -> {
+                                String name = p.getName();
+                                if (bookAuthor.contains(name)) { // находим точный ник автора книги
+                                    book.setAuthor(name + (!reset ? " " + (Bukkit.getPlayer(name) != null ? online : offline) : "")); // устанавливаем автора
+                                    item.setItemMeta(book); // устанавливаем мету
+                                    return;
+                                }
+                            });
+                        }
+                    }).start();
+                }
             }
         }
     }

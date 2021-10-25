@@ -2,10 +2,10 @@ package ru.siaw.free.rpplugin;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.siaw.free.rpplugin.function.HideTags;
-import ru.siaw.free.rpplugin.function.OnlineBook;
 import ru.siaw.free.rpplugin.command.Commands;
 import ru.siaw.free.rpplugin.data.FileManager;
+import ru.siaw.free.rpplugin.function.HideTags;
+import ru.siaw.free.rpplugin.function.OnlineBook;
 
 public class RPplugin extends JavaPlugin {
     private static RPplugin inst;
