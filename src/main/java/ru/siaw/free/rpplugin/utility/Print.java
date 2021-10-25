@@ -2,6 +2,8 @@ package ru.siaw.free.rpplugin.utility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class Print {
@@ -21,7 +23,14 @@ public class Print {
         p.sendMessage(msg);
     }
 
+    public static void toSender(CommandSender sender, String msg) {
+        if (sender instanceof ConsoleCommandSender)
+            errToConsole(msg);
+        else if (sender instanceof Player)
+            toPlayer((Player) sender, msg);
+    }
+
     public static void toPlayers(String msg) {
-        Bukkit.getOnlinePlayers().forEach(p -> toPlayer(p, msg));;
+        Bukkit.getOnlinePlayers().forEach(p -> toPlayer(p, msg));
     }
 }

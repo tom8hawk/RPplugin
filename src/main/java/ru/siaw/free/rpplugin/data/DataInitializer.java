@@ -22,8 +22,8 @@ public class DataInitializer {
         msg = YamlConfiguration.loadConfiguration(new File(dataFolder, "message.yml"));
 
         Commands.setUsePerms((boolean) getConfigValue("perms.check"));
-        Commands.setNoPermsMsg(getMsgValue("system.noPerms"));
-        Commands.setUnknown(getMsgValue("system.unknownMsg"));
+        Commands.setNoPerms(getMsgValue("system.noPerms"));
+        Commands.setUnknown(getMsgValue("system.unknownCmd"));
 
         HideTags.setEnabled((boolean) getConfigValue("hideTags.enabled"));
         HideTags.setMessage(getMsgValue("hideTags.message"));

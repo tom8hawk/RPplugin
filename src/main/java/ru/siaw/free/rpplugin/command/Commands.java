@@ -10,6 +10,8 @@ import ru.siaw.free.rpplugin.function.Me;
 import ru.siaw.free.rpplugin.function.Try;
 import ru.siaw.free.rpplugin.utility.Print;
 
+import java.util.Arrays;
+
 public class Commands implements CommandExecutor {
     private static boolean usePerms;
     private static String noPermsMsg, unknown;
@@ -17,9 +19,12 @@ public class Commands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         String lowerCase = label.toLowerCase();
 
-        if (label.equals("rppl") && args[0].equals("reload") && (sender instanceof ConsoleCommandSender || checkPerm(sender, "rppl.reload"))) {
-            new FileManager().checkFiles();
-            Print.msgToConsole("The configuration has been reset.");
+        if (label.equals("rppl") && (sender instanceof ConsoleCommandSender || checkPerm(sender, "rppl.reload"))) {
+            if (args[0].equals("reload")) {
+                new FileManager().checkFiles();
+                Print.msgToConsole("Все настройки перезагружены!");
+            }
+            else Print.toSender(sender, unknown.replace("%cmd", lowerCase + " " + Arrays.toString(args)));
         } else if (sender instanceof Player) {
             Player player = (Player) sender;
             switch (lowerCase) {
@@ -30,9 +35,6 @@ public class Commands implements CommandExecutor {
                 case "me":
                     if (checkPerm(sender, "me.use"))
                         Me.send(player, extractMessage(args));
-                    break;
-                default:
-                    Print.toPlayer(player, unknown);
             }
         }
         return false;
@@ -40,7 +42,7 @@ public class Commands implements CommandExecutor {
 
     private boolean checkPerm(CommandSender sender, String perm) {
         boolean hasPerm = !usePerms || sender.hasPermission(perm) || sender.isOp();
-        if (!hasPerm && sender instanceof Player) Print.toPlayer((Player) sender, noPermsMsg);
+        if (!hasPerm) Print.toSender(sender, noPermsMsg);
 
         return hasPerm;
     }
@@ -56,7 +58,7 @@ public class Commands implements CommandExecutor {
         usePerms = value;
     }
 
-    public static void setNoPermsMsg(String value) {
+    public static void setNoPerms(String value) {
         noPermsMsg = value;
     }
 

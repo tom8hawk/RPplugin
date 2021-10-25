@@ -48,7 +48,7 @@ public class FileManager {
         Set<String> newFileKeys = newYMLFile.getKeys(true);
 
         if (!newFileKeys.equals(oldFileKeys)) {
-            Print.errToConsole("A mismatch of your file " + fileName + " with the current one was found. Your file will be overwritten with your parameters saved.");
+            Print.errToConsole("Найдено несоответсвие файла " + fileName + " обновлённому. Мы перезапишем этот файл с сохранение старых параметров.");
 
             storeOldFile(fileName);
             newFileKeys.forEach(key -> {
@@ -61,7 +61,7 @@ public class FileManager {
                     oldYMLFile.set(key, null);
             });
             oldYMLFile.save(file);
-            Print.msgToConsole(fileName + " updated and now contains new keys.");
+            Print.msgToConsole(fileName + " обновлён.");
         }
         Files.delete(tempPath);
     }
@@ -72,7 +72,7 @@ public class FileManager {
     }
 
     private void storeOldFile(String fileName) throws IOException {
-        Print.infoToConsole("We saved the file in the `OutdatedFiles` folder before making changes to the file.");
+        Print.infoToConsole("Мы сохранили старый файл в папку `OutdatedFiles`.");
 
         File outdatedFolder = new File(dataFolder, "/OutdatedFiles");
         if (!outdatedFolder.exists())
