@@ -48,7 +48,7 @@ public class FileManager {
         Set<String> newFileKeys = newYMLFile.getKeys(true);
 
         if (!newFileKeys.equals(oldFileKeys)) {
-            Print.errToConsole("Найдено несоответсвие файла " + fileName + " обновлённому. Мы перезапишем этот файл с сохранение старых параметров.");
+            Print.errToConsole("Найдено несоответсвие файла " + fileName + " оригинальному. Мы перезапишем этот файл с сохранением старых параметров.");
 
             storeOldFile(fileName);
             newFileKeys.forEach(key -> {

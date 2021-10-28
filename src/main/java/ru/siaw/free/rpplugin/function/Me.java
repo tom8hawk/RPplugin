@@ -5,14 +5,13 @@ import ru.siaw.free.rpplugin.utility.RpSender;
 
 public class Me {
     private static final RpSender sendUtil = new RpSender();
-    private static String original;
 
     public static void send(Player sender, String msg) {
-        sendUtil.use(sender, msg, original);
+        sendUtil.use(sender, msg);
     }
 
     public static void setMeOriginal(String value) {
-        original = value;
+        sendUtil.setOriginal(value);
     }
 
     public static void setMeGlobal(boolean value) {

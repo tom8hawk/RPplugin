@@ -3,7 +3,6 @@ package ru.siaw.free.rpplugin.function;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,18 +29,14 @@ public class OnlineBook implements Listener {
             if (book != null) {
                 String bookAuthor = book.getAuthor();
                 if (bookAuthor != null) {
-                    new Thread(new Runnable() {
-                        public synchronized void run() {
-                            players.forEach(p -> {
-                                String name = p.getName();
-                                if (bookAuthor.contains(name)) { // находим точный ник автора книги
-                                    book.setAuthor(name + (!reset ? " " + (Bukkit.getPlayer(name) != null ? online : offline) : "")); // устанавливаем автора
-                                    item.setItemMeta(book); // устанавливаем мету
-                                    return;
-                                }
-                            });
+                    new Thread(() -> players.forEach(p -> {
+                        String name = p.getName();
+                        if (bookAuthor.contains(name)) { // находим точный ник автора книги
+                            book.setAuthor(name + (!reset ? " " + (Bukkit.getPlayer(name) != null ? online : offline) : "")); // устанавливаем автора
+                            item.setItemMeta(book); // устанавливаем мету
+                            return;
                         }
-                    }).start();
+                    })).start();
                 }
             }
         }
@@ -50,8 +45,7 @@ public class OnlineBook implements Listener {
     // присоединение к серверу
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        for (ItemStack item : e.getPlayer().getInventory())
-            update(item); // проходимся циклом по вещам и обновляем книги
+        e.getPlayer().getInventory().forEach(this::update); // проходимся циклом по вещам и обновляем книги
     }
 
     // любые действия с книгами
@@ -59,21 +53,20 @@ public class OnlineBook implements Listener {
     public void onEditBook(PlayerEditBookEvent e) {
         Player p = e.getPlayer();
         if (e.isSigning() && !players.contains(p)) players.add(p);
-        for (ItemStack item : p.getInventory()) update(item);
+
+        p.getInventory().forEach(this::update);
     }
 
     // открытие инвентаря (не инвентаря игрока)
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent e) {
-        for (HumanEntity p : e.getViewers()) {
-            for (ItemStack item : p.getInventory()) update(item);
-        }
+        e.getViewers().forEach(p -> p.getInventory().forEach(this::update));
     }
 
     // клик в инвентаре
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        for (ItemStack item : e.getWhoClicked().getInventory()) update(item);
+        e.getWhoClicked().getInventory().forEach(this::update);
     }
 
     // shift + ПКМ
