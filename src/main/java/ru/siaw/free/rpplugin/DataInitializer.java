@@ -1,8 +1,7 @@
-package ru.siaw.free.rpplugin.data;
+package ru.siaw.free.rpplugin;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
-import ru.siaw.free.rpplugin.RPplugin;
 import ru.siaw.free.rpplugin.command.Commands;
 import ru.siaw.free.rpplugin.function.HideTags;
 import ru.siaw.free.rpplugin.function.Me;
@@ -12,12 +11,32 @@ import ru.siaw.free.rpplugin.function.Try;
 import java.io.File;
 import java.util.Objects;
 
-public class DataInitializer {
-    private YamlConfiguration msg;
-    private YamlConfiguration config;
+import static ru.siaw.free.rpplugin.RPplugin.inst;
 
-    public void initialize() {
-        File dataFolder = RPplugin.getInst().getDataFolder();
+public class DataInitializer {
+    private static final File dataFolder = inst.getDataFolder();
+
+    private static YamlConfiguration msg;
+    private static YamlConfiguration config;
+
+    public static void checkFiles() {
+        checkFile("message.yml");
+        checkFile("config.yml");
+
+        initialize();
+    }
+
+    private static void checkFile(String fileName) {
+        File file = new File(dataFolder, fileName);
+
+        if (!dataFolder.exists())
+            dataFolder.mkdir();
+
+        if (!file.exists())
+            inst.saveResource(fileName, false);
+    }
+
+    private static void initialize() {
         config = YamlConfiguration.loadConfiguration(new File(dataFolder, "config.yml"));
         msg = YamlConfiguration.loadConfiguration(new File(dataFolder, "message.yml"));
 
@@ -44,11 +63,11 @@ public class DataInitializer {
         OnlineBook.setOffline(getMsgValue("onlineBook.offline"));
     }
 
-    private Object getConfigValue(String path) {
+    private static Object getConfigValue(String path) {
         return config.get(path);
     }
 
-    private String getMsgValue(String path) {
+    private static String getMsgValue(String path) {
         return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(msg.getString(path)));
     }
 }

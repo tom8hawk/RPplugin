@@ -11,10 +11,3 @@ commands:
     desription: The /try command
   me:
     desription: The /me command
-permissions:
-  rppl.reload:
-    default: op
-  try.use:
-    default: op
-  me.use:
-    default: op

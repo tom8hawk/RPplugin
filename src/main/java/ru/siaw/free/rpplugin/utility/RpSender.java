@@ -2,8 +2,10 @@ package ru.siaw.free.rpplugin.utility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import ru.siaw.free.rpplugin.RPplugin;
 
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 public class RpSender {
     private boolean global;
@@ -11,25 +13,35 @@ public class RpSender {
     private String successful, unsuccessful;
     private int radius;
 
+    private static final String PLAYER = "%player";
+    private static final String MESSAGE = "%message";
+    private static final String LUCK_MSG = "%luckmsg";
+
     public void use(Player sender, String msg) {
         String toSend = replace(sender.getDisplayName(), msg);
-        if (global)
+
+        if (global) {
             Print.toPlayers(toSend);
-        else
-            Bukkit.getOnlinePlayers().stream().filter(p -> p.getWorld().equals(sender.getWorld())).filter(p -> p.getLocation().distance(sender.getLocation()) <= radius).forEach(p -> Print.toPlayer(p, toSend));
+        } else try {
+            Bukkit.getScheduler().callSyncMethod(RPplugin.inst, () -> sender.getNearbyEntities(radius, radius, radius)).get().stream()
+                    .filter(p -> p instanceof Player)
+                    .forEach(p -> Print.toPlayer((Player) p, toSend));
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     private String replace(String playerName, String playerMsg) {
         String changed = original;
 
-        String word = "%player";
-        if (changed.contains(word)) changed = changed.replace(word, playerName.trim());
+        if (changed.contains(PLAYER))
+            changed = changed.replace(PLAYER, playerName.trim());
 
-        word = "%message";
-        if (changed.contains(word)) changed = changed.replace(word, playerMsg.trim());
+        if (changed.contains(MESSAGE))
+            changed = changed.replace(MESSAGE, playerMsg.trim());
 
-        word = "%luckmsg";
-        if (changed.contains(word)) changed = changed.replace(word, luckMsg());
+        if (changed.contains(LUCK_MSG))
+            changed = changed.replace(LUCK_MSG, luckMsg());
 
         return changed;
     }

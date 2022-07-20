@@ -2,8 +2,6 @@ package ru.siaw.free.rpplugin.function;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -12,71 +10,79 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.Arrays;
-import java.util.List;
+
+import static ru.siaw.free.rpplugin.RPplugin.executor;
 
 public class OnlineBook implements Listener {
     private static String online, offline;
     private static boolean enabled, reset;
-    private static final List<OfflinePlayer> players = Arrays.asList(Bukkit.getOfflinePlayers());
 
-    private void update(ItemStack item) {
-        if (enabled && item != null && item.getType() == Material.WRITTEN_BOOK) { // проверяем подписанная ли это книга
-            BookMeta book = (BookMeta) item.getItemMeta(); // получаем мету
-            if (book != null) {
-                String bookAuthor = book.getAuthor();
-                if (bookAuthor != null) {
-                    new Thread(() -> players.forEach(p -> {
-                        String name = p.getName();
-                        if (bookAuthor.contains(name)) { // находим точный ник автора книги
-                            book.setAuthor(name + (!reset ? " " + (Bukkit.getPlayer(name) != null ? online : offline) : "")); // устанавливаем автора
-                            item.setItemMeta(book); // устанавливаем мету
-                            return;
+    private void update(Inventory inventory) {
+        executor.execute(() -> {
+            if (enabled) {
+                for (int index = 0; index < inventory.getContents().length; index++) {
+                    ItemStack item = inventory.getItem(index);
+
+                    if (item != null && item.getType() == Material.WRITTEN_BOOK) {
+                        BookMeta book = (BookMeta) item.getItemMeta();
+
+                        if (book != null) {
+                            String bookAuthor = book.getAuthor();
+
+                            if (bookAuthor != null) {
+                                int finalIndex = index;
+
+                                Arrays.stream(Bukkit.getOfflinePlayers())
+                                        .filter(p -> p.getName() != null)
+                                        .filter(p -> bookAuthor.contains(p.getName()))
+                                        .findFirst().ifPresent(player -> {
+                                            if (reset)
+                                                book.setAuthor(player.getName());
+                                            else
+                                                book.setAuthor(player.getName() + " " + (player.isOnline() ? online : offline));
+
+                                            item.setItemMeta(book);
+                                            inventory.setItem(finalIndex, item);
+                                        });
+                            }
                         }
-                    })).start();
+                    }
                 }
             }
-        }
+        });
     }
 
-    // присоединение к серверу
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        e.getPlayer().getInventory().forEach(this::update); // проходимся циклом по вещам и обновляем книги
+        update(e.getPlayer().getInventory());
     }
 
-    // любые действия с книгами
     @EventHandler
     public void onEditBook(PlayerEditBookEvent e) {
-        Player p = e.getPlayer();
-        if (e.isSigning() && !players.contains(p)) players.add(p);
-
-        p.getInventory().forEach(this::update);
+        update(e.getPlayer().getInventory());
     }
 
-    // открытие инвентаря (не инвентаря игрока)
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent e) {
-        e.getViewers().forEach(p -> p.getInventory().forEach(this::update));
+        update(e.getPlayer().getInventory());
     }
 
-    // клик в инвентаре
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        e.getWhoClicked().getInventory().forEach(this::update);
+        update(e.getWhoClicked().getInventory());
     }
 
-    // shift + ПКМ
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        if (!e.getPlayer().isSneaking() && e.getAction() != Action.RIGHT_CLICK_AIR &&
-                e.getAction() != Action.RIGHT_CLICK_BLOCK)
-            return; // проверяем, сидит ли игрок на шифте, и если "действие" - правый клик
+        if (!e.getPlayer().isSneaking() && e.getAction() != Action.RIGHT_CLICK_AIR && e.getAction() != Action.RIGHT_CLICK_BLOCK)
+            return;
 
-        update(e.getItem());
+        update(e.getPlayer().getInventory());
     }
 
     public static void setOnline(String value) {

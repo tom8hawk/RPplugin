@@ -1,9 +1,6 @@
-#
-# Настройка сообщений плагина
-#
-
 try:
-  message: '%player %message %luckmsg' # Все, что начинается с %, будет заменено плагином. player - исполнитель комманды, message - сообщение, luckmsg - сообщение "Успешно"/"Неудачно"
+  message: '%player %message %luckmsg'
+
   successfulMessage: '&a[Удачно]'
   unsuccessfulMessage: '&c[Неудачно]'
 onlineBook:
@@ -14,6 +11,6 @@ me:
 hideTags:
   message: '%name'
 
-system: # Настройка системных сообщений
+system:
   noPerms: '&cУ тебя недостаточно прав для этого'
-  unknownCmd: '&eЯ не знаю такую комманду: "%cmd"'
+  unknownCmd: '&eЯ не знаю такую комманду!'
