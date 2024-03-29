@@ -1,8 +1,8 @@
-package ru.siaw.free.rpplugin;
+package t.me.tom8hawk;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.siaw.free.rpplugin.function.HideTags;
-import ru.siaw.free.rpplugin.function.OnlineBook;
+import t.me.tom8hawk.function.HideTags;
+import t.me.tom8hawk.function.OnlineBook;
 
 public class RPplugin extends JavaPlugin {
     public static RPplugin inst;

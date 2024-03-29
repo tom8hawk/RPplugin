@@ -1,4 +1,4 @@
-package ru.siaw.free.rpplugin;
+package t.me.tom8hawk;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -6,7 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.util.Objects;
 
-import static ru.siaw.free.rpplugin.RPplugin.inst;
+import static t.me.tom8hawk.RPplugin.inst;
 
 public class Config {
     private static final File dataFolder = inst.getDataFolder();

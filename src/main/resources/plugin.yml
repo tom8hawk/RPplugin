@@ -1,8 +1,7 @@
 name: '${project.name}'
 version: '${project.version}'
-main: ru.siaw.free.rpplugin.RPplugin
-author: tom8hawk
-website: siaw.ru
+main: t.me.tom8hawk.RPplugin
+author: https://t.me/tom8hawk
 softdepend: [ ProtocolLib ]
 
 commands:

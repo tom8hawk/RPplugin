@@ -1,4 +1,4 @@
-package ru.siaw.free.rpplugin.function;
+package t.me.tom8hawk.function;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -12,8 +12,8 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-import ru.siaw.free.rpplugin.Config;
-import ru.siaw.free.rpplugin.RPplugin;
+import t.me.tom8hawk.Config;
+import t.me.tom8hawk.RPplugin;
 
 public class HideTags implements Listener {
     private static Scoreboard board;

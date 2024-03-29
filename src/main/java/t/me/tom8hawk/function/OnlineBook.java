@@ -1,4 +1,4 @@
-package ru.siaw.free.rpplugin.function;
+package t.me.tom8hawk.function;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
@@ -12,8 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-import ru.siaw.free.rpplugin.Config;
-import ru.siaw.free.rpplugin.RPplugin;
+import t.me.tom8hawk.Config;
+import t.me.tom8hawk.RPplugin;
 
 import java.util.ArrayList;
 import java.util.List;

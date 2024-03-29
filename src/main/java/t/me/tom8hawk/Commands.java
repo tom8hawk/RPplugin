@@ -1,4 +1,4 @@
-package ru.siaw.free.rpplugin;
+package t.me.tom8hawk;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
