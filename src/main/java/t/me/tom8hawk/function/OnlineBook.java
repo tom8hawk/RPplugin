@@ -1,5 +1,6 @@
 package t.me.tom8hawk.function;
 
+import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketAdapter;
@@ -7,7 +8,6 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BukkitConverters;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
@@ -18,9 +18,6 @@ import t.me.tom8hawk.RPplugin;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.comphenix.protocol.PacketType.Play.Server.SET_SLOT;
-import static com.comphenix.protocol.PacketType.Play.Server.WINDOW_ITEMS;
-
 public class OnlineBook {
 
     private OnlineBook() {
@@ -28,22 +25,18 @@ public class OnlineBook {
 
     public static void init() {
         if (Config.getBoolean("ONLINE-BOOK.enabled")) {
-            if (!Bukkit.getPluginManager().isPluginEnabled("ProtocolLib")) {
-                RPplugin.inst.getLogger().info(() -> ChatColor.RED + "ProtocolLib должен быть включен для работы модуля ONLINE-BOOK");
-                return;
-            }
-
             ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-            protocolManager.addPacketListener(new PacketAdapter(RPplugin.inst, SET_SLOT, WINDOW_ITEMS) {
+            protocolManager.addPacketListener(new PacketAdapter(RPplugin.inst,
+                    PacketType.Play.Server.SET_SLOT, PacketType.Play.Server.WINDOW_ITEMS) {
 
                 @Override
                 public void onPacketSending(PacketEvent event) {
                     PacketContainer packet = event.getPacket();
 
-                    if (packet.getType() == SET_SLOT) {
+                    if (packet.getType() == PacketType.Play.Server.SET_SLOT) {
                         ItemStack item = packet.getItemModifier().read(0).clone();
                         packet.getItemModifier().write(0, handle(item));
-                    } else if (packet.getType() == WINDOW_ITEMS) {
+                    } else if (packet.getType() == PacketType.Play.Server.WINDOW_ITEMS) {
                         List<ItemStack> previousItems = packet.getLists(BukkitConverters.getItemStackConverter()).read(0);
                         List<ItemStack> newItems = new ArrayList<>();
 
