@@ -1,13 +1,10 @@
-name: RPplugin
+name: '${project.name}'
 version: '${project.version}'
 main: ru.siaw.free.rpplugin.RPplugin
 author: tom8hawk
 website: siaw.ru
+softdepend: [ ProtocolLib ]
 
 commands:
   rppl:
-    desription: Commands of the plugin itself/business trips
-  try:
-    desription: The /try command
-  me:
-    desription: The /me command
+    aliases: [ try, me ]

@@ -1,13 +1,26 @@
-try:
-  globalChat: true # Будет ли сообщение отправляться всем игрокам?
-  radius: 100 # Радиус отправки сообщения (только если параметр "global_chat" = true)
-me:
-  globalChat: true
-  radius: 100
-onlineBook:
-  enabled: true
-  reset: false
-hideTags:
-  enabled: true
+TRY:
+  global: true # Будет ли сообщение отправляться всем игрокам?
+  distance: 100 # Только если параметр "global_chat" = false)
 
-perms.check: false # Нужно ли проверять, имеет ли игрок право использовать рп-команды
+  message: '%player %message %result'
+  successful: '&a[Удачно]'
+  unsuccessful: '&c[Неудачно]'
+
+ME:
+  global: true
+  distance: 100
+  message: '&e* &f%player %message'
+
+ONLINE-BOOK:
+  enabled: false
+  online: '&a(онлайн)'
+  offline: '&c(оффлайн)'
+
+HIDE-TAGS:
+  enabled: false
+  actionbar: '%name'
+
+commands:
+  check-permission: false # Нужно ли проверять, имеет ли игрок права
+  no-permission: '&cУ тебя недостаточно прав для этого'
+  unknown: '&eЯ не знаю такую команду!'
