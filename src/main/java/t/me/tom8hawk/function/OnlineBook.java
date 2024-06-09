@@ -16,9 +16,12 @@ import t.me.tom8hawk.Config;
 import t.me.tom8hawk.RPplugin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OnlineBook {
+    private static final Map<String, OfflinePlayer> authorsCache = new HashMap<>();
 
     private OnlineBook() {
     }
@@ -61,23 +64,40 @@ public class OnlineBook {
                 String author = book.getAuthor();
 
                 if (author != null) {
-                    for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-                        String name = player.getName();
+                    OfflinePlayer player = getOfflinePlayerByAuthor(author);
 
-                        if (name != null && author.contains(player.getName())) {
-                            item = item.clone();
+                    if (player != null) {
+                        item = item.clone();
 
-                            String postfix = Config.getMessage("ONLINE-BOOK." + (player.isOnline() ? "online" : "offline"));
-                            book.setAuthor(player.getName() + " " + postfix);
-                            item.setItemMeta(book);
+                        String postfix = Config.getMessage("ONLINE-BOOK." + (player.isOnline() ? "online" : "offline"));
+                        book.setAuthor(player.getName() + " " + postfix);
+                        item.setItemMeta(book);
 
-                            return item;
-                        }
+                        return item;
                     }
                 }
             }
         }
 
         return item;
+    }
+
+    private static OfflinePlayer getOfflinePlayerByAuthor(String author) {
+        OfflinePlayer cached = authorsCache.get(author);
+
+        if (cached != null) {
+            return cached;
+        }
+
+        for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
+            String name = offline.getName();
+
+            if (name != null && author.contains(name)) {
+                authorsCache.put(author, offline);
+                return offline;
+            }
+        }
+
+        return null;
     }
 }
