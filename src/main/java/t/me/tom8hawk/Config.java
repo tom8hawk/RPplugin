@@ -1,14 +1,15 @@
 package t.me.tom8hawk;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static t.me.tom8hawk.RPplugin.inst;
 
 public class Config {
+    private static final Pattern HEX_PATTERN = Pattern.compile("&#[a-fA-F0-9]{6}");
     private static final File dataFolder = inst.getDataFolder();
     private static YamlConfiguration yaml;
 
@@ -38,6 +39,19 @@ public class Config {
     }
 
     public static String getMessage(String path) {
-        return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(yaml.getString(path)));
+        return translateColors(yaml.getString(path, ""));
+    }
+
+    public static String translateColors(String message) {
+        Matcher matcher = HEX_PATTERN.matcher(message);
+
+        while (matcher.find()) {
+            String color = message.substring(matcher.start(), matcher.end());
+            message = message.replace(color,
+                    net.md_5.bungee.api.ChatColor.of(color.replace("&","")) + "");
+            matcher = HEX_PATTERN.matcher(message);
+        }
+
+        return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', message);
     }
 }
