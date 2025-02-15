@@ -7,21 +7,30 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BukkitConverters;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import t.me.tom8hawk.Config;
 import t.me.tom8hawk.RPplugin;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-public class OnlineBook {
-    private static final Map<String, OfflinePlayer> authorsCache = new HashMap<>();
+public class OnlineBook implements Listener {
+
+    private static final Cache<String, Boolean> onlinePlayersCache = CacheBuilder.newBuilder()
+            .maximumSize(30)
+            .expireAfterWrite(2, TimeUnit.HOURS)
+            .build();
 
     private OnlineBook() {
     }
@@ -54,6 +63,8 @@ public class OnlineBook {
                 }
             });
         }
+
+        Bukkit.getPluginManager().registerEvents(new OnlineBook(), RPplugin.inst);
     }
 
     private static ItemStack handle(ItemStack item) {
@@ -64,17 +75,14 @@ public class OnlineBook {
                 String author = book.getAuthor();
 
                 if (author != null) {
-                    OfflinePlayer player = getOfflinePlayerByAuthor(author);
+                    item = item.clone();
 
-                    if (player != null) {
-                        item = item.clone();
+                    boolean online = isPlayerOnline(author);
+                    String postfix = Config.getMessage("ONLINE-BOOK." + (online ? "online" : "offline"));
+                    book.setAuthor(author + " " + postfix);
+                    item.setItemMeta(book);
 
-                        String postfix = Config.getMessage("ONLINE-BOOK." + (player.isOnline() ? "online" : "offline"));
-                        book.setAuthor(player.getName() + " " + postfix);
-                        item.setItemMeta(book);
-
-                        return item;
-                    }
+                    return item;
                 }
             }
         }
@@ -82,22 +90,42 @@ public class OnlineBook {
         return item;
     }
 
-    private static OfflinePlayer getOfflinePlayerByAuthor(String author) {
-        OfflinePlayer cached = authorsCache.get(author);
+    private static boolean isPlayerOnline(String name) {
+        Boolean cachedValue = onlinePlayersCache.getIfPresent(name);
 
-        if (cached != null) {
-            return cached;
+        if (cachedValue != null) {
+            return cachedValue;
         }
 
-        for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
-            String name = offline.getName();
+        boolean online = Bukkit.getOnlinePlayers().stream()
+                .anyMatch(player -> player.getName().equals(name));
 
-            if (name != null && author.contains(name)) {
-                authorsCache.put(author, offline);
-                return offline;
-            }
-        }
-
-        return null;
+        onlinePlayersCache.put(name, online);
+        return online;
     }
+
+    private static void setPlayerOnlineIfPresent(String playerName, boolean online) {
+        if (onlinePlayersCache.getIfPresent(playerName) != null) {
+            onlinePlayersCache.put(playerName, online);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        String playerName = event.getPlayer().getName();
+        setPlayerOnlineIfPresent(playerName, true);
+    }
+
+    @EventHandler
+    public void onPlayerKick(PlayerKickEvent event) {
+        String playerName = event.getPlayer().getName();
+        setPlayerOnlineIfPresent(playerName, false);
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        String playerName = event.getPlayer().getName();
+        setPlayerOnlineIfPresent(playerName, false);
+    }
+
 }
