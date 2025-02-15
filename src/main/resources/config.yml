@@ -1,26 +1,22 @@
 TRY:
-  global: true # Будет ли сообщение отправляться всем игрокам?
-  distance: 100 # Только если параметр "global_chat" = false)
-
-  message: '%player %message %result'
-  successful: '&a[Удачно]'
-  unsuccessful: '&c[Неудачно]'
+  distance: 100 # -1 - чтобы глобально
+  success: '%player %message &a[Удачно]'
+  failed: '%player %message &c[Неудачно]'
 
 ME:
-  global: true
-  distance: 100
+  distance: 100 # -1 - чтобы глобально
   message: '&e* &f%player %message'
 
 ONLINE-BOOK:
   enabled: false
-  online: '&a(онлайн)'
-  offline: '&c(оффлайн)'
+  online: ' &a(онлайн)'
+  offline: ' &c(оффлайн)'
 
 HIDE-TAGS:
   enabled: false
   actionbar: '%name'
 
-commands:
-  check-permission: false # Нужно ли проверять, имеет ли игрок права
+messages:
+  # Оставь пустым, чтобы отключить проверку.
   no-permission: '&cУ тебя недостаточно прав для этого'
   unknown: '&eЯ не знаю такую команду!'

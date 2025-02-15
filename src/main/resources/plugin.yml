@@ -6,5 +6,6 @@ softdepend: [ ProtocolLib ]
 api-version: 1.16
 
 commands:
-  rppl:
-    aliases: [ try, me ]
+  rppl: { }
+  try:
+    aliases: [ me ]
