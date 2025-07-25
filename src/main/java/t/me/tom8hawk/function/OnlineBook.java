@@ -9,10 +9,8 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BukkitConverters;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -24,7 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class OnlineBook implements Listener {
+public final class OnlineBook extends RpFunction {
 
     private final RPplugin plugin;
     private final ConfigValues configValues;
@@ -36,8 +34,9 @@ public final class OnlineBook implements Listener {
         this.online = new HashSet<>();
     }
 
+    @Override
     public void init() {
-        if (!this.plugin.getConfigValues().isOnlineBookEnabled()) {
+        if (!this.isFunctionEnabled()) {
             return;
         }
 
@@ -69,22 +68,32 @@ public final class OnlineBook implements Listener {
         });
     }
 
+    @Override
+    boolean isFunctionEnabled() {
+        return this.plugin.getConfigValues().isOnlineBookEnabled();
+    }
+
+    @Override
+    public void disable() {
+        ProtocolLibrary.getProtocolManager().removePacketListeners(plugin);
+        this.online.clear();
+    }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         this.onEvent(event);
     }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerKick(PlayerKickEvent event) {
-        this.onEvent(event);
-    }
-
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         this.onEvent(event);
     }
 
     private void onEvent(PlayerEvent event) {
+        if (!this.isFunctionEnabled()) {
+            return;
+        }
+
         this.online.add(event.getPlayer().getName());
     }
 
@@ -96,8 +105,6 @@ public final class OnlineBook implements Listener {
                 String author = book.getAuthor();
 
                 if (author != null) {
-
-                    author = author.substring(0, author.indexOf(' ') - 1);
                     item = item.clone();
 
                     String postfix = this.online.contains(author)

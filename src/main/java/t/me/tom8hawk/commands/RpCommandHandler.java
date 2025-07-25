@@ -1,54 +1,82 @@
 package t.me.tom8hawk.commands;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import t.me.tom8hawk.RPplugin;
 import t.me.tom8hawk.config.ConfigValues;
-import t.me.tom8hawk.utils.StringUtils;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public final class RpCommandHandler implements CommandExecutor {
+public final class RpCommandHandler extends CommandHandler {
 
     private final ConfigValues configValues;
     private final ThreadLocalRandom random;
 
     public RpCommandHandler(RPplugin plugin) {
+        super(plugin);
         this.configValues = plugin.getConfigValues();
         this.random = ThreadLocalRandom.current();
     }
 
     @Override
+    protected List<String> getHandledCommands() {
+        return List.of("me", "try");
+    }
+
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Только для игроков!");
+            sender.sendMessage(this.configValues.getOnlyPlayersMessage());
             return true;
         }
 
         final Player playerSender = (Player) sender;
 
         final int distance;
-        String message;
+        Component message;
 
         if (label.equalsIgnoreCase("try")) {
+
+            if (configValues.isTryPermission() && !sender.hasPermission("rppl.try")) {
+                sender.sendMessage(this.configValues.getNoPermissionMessage());
+                return true;
+            }
+
             distance = this.configValues.getTryDistance();
             message = this.random.nextBoolean()
                     ? this.configValues.getTrySuccess()
                     : this.configValues.getTryFailed();
         } else {
+
+            if (configValues.isMePermission() && !sender.hasPermission("rppl.me")) {
+                sender.sendMessage(this.configValues.getNoPermissionMessage());
+                return true;
+            }
+
             distance = this.configValues.getMeDistance();
-            message = this.configValues.getMeMessage();
+            message = this.configValues.getMeFormat();
         }
 
-        message = StringUtils.fastReplace(message, "%player", playerSender.getDisplayName());
-        message = StringUtils.fastReplace(message, "%message", String.join(" ", args));
+        message = message.replaceText(TextReplacementConfig.builder()
+                .matchLiteral("%player")
+                .replacement(playerSender.getDisplayName())
+                .build()
+        );
+
+        message = message.replaceText(TextReplacementConfig.builder()
+                .matchLiteral("%message")
+                .replacement(String.join(" ", args))
+                .build()
+        );
 
         if (distance == -1) {
             for (final Player target : Bukkit.getOnlinePlayers()) {

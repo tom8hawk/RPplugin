@@ -1,36 +1,40 @@
 package t.me.tom8hawk.commands;
 
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import t.me.tom8hawk.RPplugin;
 import t.me.tom8hawk.config.ConfigValues;
 
-public final class MainCommandHandler implements CommandExecutor {
+import java.util.Collections;
+import java.util.List;
+
+public final class MainCommandHandler extends CommandHandler {
 
     private final ConfigValues configValues;
 
     public MainCommandHandler(RPplugin plugin) {
+        super(plugin);
         this.configValues = plugin.getConfigValues();
     }
 
     @Override
+    protected List<String> getHandledCommands() {
+        return Collections.singletonList("rppl");
+    }
+
+    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (!this.testPermission(sender)) {
+        if (!sender.hasPermission("rppl.reload")) {
             return true;
         }
 
+        this.plugin.disableFunctions();
+
         this.configValues.setup();
-        sender.sendMessage("Настройки перезагружены.");
+        this.plugin.setupFunctions();
+
+        sender.sendMessage("Плагин перезагружен!");
         return true;
     }
 
-    private boolean testPermission(CommandSender sender) {
-        if (!this.configValues.getNoPermissionMessage().isEmpty() && !sender.hasPermission("rppl.reload")) {
-            sender.sendMessage(this.configValues.getNoPermissionMessage());
-            return false;
-        }
-
-        return true;
-    }
 }

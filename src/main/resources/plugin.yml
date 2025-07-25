@@ -3,9 +3,11 @@ version: '${project.version}'
 main: t.me.tom8hawk.RPplugin
 author: https://t.me/tom8hawk
 softdepend: [ ProtocolLib ]
-api-version: 1.16
+api-version: 1.17
 
 commands:
   rppl: { }
+  nickname:
+    aliases: [ nick ]
   try:
     aliases: [ me ]
