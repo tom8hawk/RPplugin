@@ -13,8 +13,6 @@ import java.util.List;
 
 public final class NicknameCommandHandler extends CommandHandler {
 
-    private static final List<String> COMPLETIONS = List.of("hide", "show");
-
     private final ConfigValues configValues;
 
     private final HideTags hideTags;
@@ -43,18 +41,18 @@ public final class NicknameCommandHandler extends CommandHandler {
         final Player playerSender = (Player) sender;
 
         if (args.length != 0) {
-            if (args[0].equalsIgnoreCase("hide")) {
-                hideTags.hideName(playerSender);
-                databaseManager.removeVisibleNickname(playerSender.getUniqueId());
-
-                this.plugin.getHideTags().hideName(playerSender);
-                sender.sendMessage(this.configValues.getHiddenTagMessage());
-            } else if (args[0].equalsIgnoreCase("show")) {
+            if (args[0].equalsIgnoreCase("show")) {
                 hideTags.unhideName(playerSender);
                 databaseManager.addVisibleNickname(playerSender.getUniqueId());
 
                 this.plugin.getHideTags().unhideName(playerSender);
                 sender.sendMessage(this.configValues.getShownTagMessage());
+            } else if (args[0].equalsIgnoreCase("hide")) {
+                hideTags.hideName(playerSender);
+                databaseManager.removeVisibleNickname(playerSender.getUniqueId());
+
+                this.plugin.getHideTags().hideName(playerSender);
+                sender.sendMessage(this.configValues.getHiddenTagMessage());
             }
 
             return true;
@@ -66,6 +64,6 @@ public final class NicknameCommandHandler extends CommandHandler {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return COMPLETIONS;
+        return List.of("show", "hide");
     }
 }
