@@ -3,9 +3,12 @@ package t.me.tom8hawk.commands;
 import org.bukkit.command.*;
 import t.me.tom8hawk.RPplugin;
 
+import java.util.Collections;
 import java.util.List;
 
 public abstract class CommandHandler implements CommandExecutor, TabCompleter {
+
+    private static final List<String> EMPTY_COMPLETIONS = Collections.emptyList();
 
     protected final RPplugin plugin;
 
@@ -28,7 +31,7 @@ public abstract class CommandHandler implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return List.of();
+        return EMPTY_COMPLETIONS;
     }
 
 }
