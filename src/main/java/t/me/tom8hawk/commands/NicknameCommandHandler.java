@@ -42,12 +42,24 @@ public final class NicknameCommandHandler extends CommandHandler {
 
         if (args.length != 0) {
             if (args[0].equalsIgnoreCase("show")) {
+
+                if (!sender.hasPermission("rppl.nick.show")) {
+                    sender.sendMessage(this.configValues.getNoPermissionMessage());
+                    return true;
+                }
+
                 hideTags.unhideName(playerSender);
                 databaseManager.addVisibleNickname(playerSender.getUniqueId());
 
                 this.plugin.getHideTags().unhideName(playerSender);
                 sender.sendMessage(this.configValues.getShownTagMessage());
             } else if (args[0].equalsIgnoreCase("hide")) {
+
+                if (!sender.hasPermission("rppl.nick.hide")) {
+                    sender.sendMessage(this.configValues.getNoPermissionMessage());
+                    return true;
+                }
+
                 hideTags.hideName(playerSender);
                 databaseManager.removeVisibleNickname(playerSender.getUniqueId());
 
@@ -64,6 +76,14 @@ public final class NicknameCommandHandler extends CommandHandler {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return List.of("show", "hide");
+        if (sender.hasPermission("rppl.nick.show")) {
+            return Collections.singletonList("show");
+        }
+
+        if (sender.hasPermission("rppl.nick.hide")) {
+            return Collections.singletonList("hide");
+        }
+
+        return super.onTabComplete(sender, command, alias, args);
     }
 }
