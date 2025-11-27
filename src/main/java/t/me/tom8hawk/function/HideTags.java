@@ -36,7 +36,7 @@ public final class HideTags extends RpFunction {
         }
 
         Bukkit.getOnlinePlayers().forEach(player -> {
-            if (!dbManager.isNicknameVisible(player.getUniqueId())) {
+            if (this.isNicknameHidden(player)) {
                 hideName(player);
             }
         });
@@ -64,38 +64,36 @@ public final class HideTags extends RpFunction {
         return team;
     }
 
-    private void updateViewersScoreboards(Player target, boolean hide) {
-        for (Player viewer : Bukkit.getOnlinePlayers()) {
-            if (viewer.equals(target)) continue;
+    private void updateNames(Player target, boolean hide) {
+        Scoreboard scoreboard = target.getScoreboard();
+        Team team = getOrCreateTeam(scoreboard);
 
-            Scoreboard scoreboard = viewer.getScoreboard();
-            Team team = getOrCreateTeam(scoreboard);
-
-            if (hide) {
-                team.addEntry(target.getName());
-            } else {
-                team.removeEntry(target.getName());
-            }
-
-            viewer.setScoreboard(scoreboard);
+        if (hide) {
+            team.addEntry(target.getName());
+        } else {
+            team.removeEntry(target.getName());
         }
+    }
+
+    public boolean isNicknameHidden(Player target) {
+        return this.configValues.isDefaultHidden() && !dbManager.isNicknameVisible(target.getUniqueId());
     }
 
     public void hideName(final Player target) {
         if (!this.isFunctionEnabled()) {
             return;
         }
-        updateViewersScoreboards(target, true);
+        updateNames(target, true);
     }
 
     public void unhideName(final Player target) {
         if (!this.isFunctionEnabled()) {
             return;
         }
-        updateViewersScoreboards(target, false);
+        updateNames(target, false);
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onInteract(final PlayerInteractAtEntityEvent event) {
         if (!this.isFunctionEnabled()) {
             return;
@@ -118,19 +116,8 @@ public final class HideTags extends RpFunction {
         }
 
         Player joined = event.getPlayer();
-        Scoreboard scoreboard = joined.getScoreboard();
-        Team team = getOrCreateTeam(scoreboard);
 
-        for (Player other : Bukkit.getOnlinePlayers()) {
-            if (other.equals(joined)) continue;
-
-            if (!dbManager.isNicknameVisible(other.getUniqueId())) {
-                team.addEntry(other.getName());
-                joined.setScoreboard(scoreboard);
-            }
-        }
-
-        if (!dbManager.isNicknameVisible(joined.getUniqueId())) {
+        if (this.isNicknameHidden(joined)) {
             hideName(joined);
         }
     }

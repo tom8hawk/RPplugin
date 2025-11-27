@@ -32,6 +32,7 @@ public final class ConfigValues {
     private String onlineBookOffline;
 
     private boolean hideTagsEnabled;
+    private boolean defaultHidden;
     private String hideTagsActionbar;
 
     private Component hiddenTagMessage;
@@ -51,38 +52,39 @@ public final class ConfigValues {
     }
 
     private void setupTry(final FileConfiguration config) {
-        final ConfigurationSection trySection = config.getConfigurationSection("TRY");
-        this.tryDistance = trySection.getInt("distance");
-        this.trySuccess = this.getColorized(trySection, "success");
-        this.tryFailed = this.getColorized(trySection, "failed");
+        final ConfigurationSection section = config.getConfigurationSection("TRY");
+        this.tryDistance = section.getInt("distance");
+        this.trySuccess = this.getColorized(section, "success");
+        this.tryFailed = this.getColorized(section, "failed");
     }
 
     private void setupMe(final FileConfiguration config) {
-        final ConfigurationSection meSection = config.getConfigurationSection("ME");
-        this.meDistance = meSection.getInt("distance");
-        this.meFormat = this.getColorized(meSection, "format");
+        final ConfigurationSection section = config.getConfigurationSection("ME");
+        this.meDistance = section.getInt("distance");
+        this.meFormat = this.getColorized(section, "format");
     }
 
     private void setupOnlineBook(final FileConfiguration config) {
-        final ConfigurationSection onlineBookSection = config.getConfigurationSection("ONLINE-BOOK");
-        this.onlineBookEnabled = onlineBookSection.getBoolean("enabled");
-        this.onlineBookOnline = this.onlineBookEnabled ? this.getColorizedString(onlineBookSection, "online") : null;
-        this.onlineBookOffline = this.onlineBookEnabled ? this.getColorizedString(onlineBookSection, "offline") : null;
+        final ConfigurationSection section = config.getConfigurationSection("ONLINE-BOOK");
+        this.onlineBookEnabled = section.getBoolean("enabled");
+        this.onlineBookOnline = this.onlineBookEnabled ? this.getColorizedString(section, "online") : null;
+        this.onlineBookOffline = this.onlineBookEnabled ? this.getColorizedString(section, "offline") : null;
     }
 
     private void setupHideTags(final FileConfiguration config) {
-        final ConfigurationSection onlineBookSection = config.getConfigurationSection("HIDE-TAGS");
-        this.hideTagsEnabled = onlineBookSection.getBoolean("enabled");
-        this.hideTagsActionbar = this.hideTagsEnabled ? onlineBookSection.getString("actionbar") : null;
-        this.hiddenTagMessage = this.getColorized(onlineBookSection, "messages.hidden");
-        this.shownTagMessage = this.getColorized(onlineBookSection, "messages.shown");
+        final ConfigurationSection section = config.getConfigurationSection("HIDE-TAGS");
+        this.hideTagsEnabled = section.getBoolean("enabled");
+        this.defaultHidden = section.getBoolean("default-hidden");
+        this.hideTagsActionbar = this.hideTagsEnabled ? section.getString("actionbar") : null;
+        this.hiddenTagMessage = this.getColorized(section, "messages.hidden");
+        this.shownTagMessage = this.getColorized(section, "messages.shown");
     }
 
     private void setupMessages(final FileConfiguration config) {
-        final ConfigurationSection messagesSection = config.getConfigurationSection("messages");
-        this.noPermissionMessage = this.getColorized(messagesSection, "no-permission");
-        this.onlyPlayersMessage = this.getColorized(messagesSection, "only-players");
-        this.unknownCommandMessage = this.getColorized(messagesSection, "unknown");
+        final ConfigurationSection section = config.getConfigurationSection("messages");
+        this.noPermissionMessage = this.getColorized(section, "no-permission");
+        this.onlyPlayersMessage = this.getColorized(section, "only-players");
+        this.unknownCommandMessage = this.getColorized(section, "unknown");
     }
 
     private FileConfiguration getConfig() {

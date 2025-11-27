@@ -16,6 +16,7 @@ ONLINE-BOOK:
 
 HIDE-TAGS:
   enabled: false
+  default-hidden: true # Скрывать ли ники по умолчанию
   actionbar: '%name'
 
   messages:

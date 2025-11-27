@@ -8,6 +8,7 @@ import t.me.tom8hawk.RPplugin;
 import t.me.tom8hawk.config.ConfigValues;
 import t.me.tom8hawk.function.HideTags;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -76,14 +77,16 @@ public final class NicknameCommandHandler extends CommandHandler {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        List<String> completions = new ArrayList<>();
+
         if (sender.hasPermission("rppl.nick.show")) {
-            return Collections.singletonList("show");
+            completions.add("show");
         }
 
         if (sender.hasPermission("rppl.nick.hide")) {
-            return Collections.singletonList("hide");
+            completions.add("hide");
         }
 
-        return super.onTabComplete(sender, command, alias, args);
+        return completions;
     }
 }
