@@ -1,32 +1,35 @@
 package t.me.tom8hawk.function;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.BukkitConverters;
-import org.bukkit.Material;
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.event.PacketListener;
+import com.github.retrooper.packetevents.event.PacketListenerCommon;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
+import com.github.retrooper.packetevents.event.PacketSendEvent;
+import com.github.retrooper.packetevents.protocol.component.ComponentTypes;
+import com.github.retrooper.packetevents.protocol.item.ItemStack;
+import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
+import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetCursorItem;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetSlot;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerWindowItems;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
+import org.jetbrains.annotations.NotNull;
 import t.me.tom8hawk.RPplugin;
 import t.me.tom8hawk.config.ConfigValues;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-public final class OnlineBook extends RpFunction {
+public final class OnlineBook extends RpFunction implements PacketListener {
 
     private final RPplugin plugin;
     private final ConfigValues configValues;
     private final Set<String> online;
+
+    private PacketListenerCommon packetListener;
 
     public OnlineBook(final RPplugin plugin) {
         this.plugin = plugin;
@@ -40,32 +43,25 @@ public final class OnlineBook extends RpFunction {
             return;
         }
 
-        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-        protocolManager.addPacketListener(new PacketAdapter(this.plugin,
-                PacketType.Play.Server.SET_SLOT,
-                PacketType.Play.Server.WINDOW_ITEMS) {
+        Bukkit.getPluginManager().registerEvents(this, this.plugin);
 
-            @Override
-            public void onPacketSending(PacketEvent event) {
-                PacketContainer packet = event.getPacket();
+        this.packetListener = PacketEvents.getAPI().getEventManager()
+                .registerListener(this, PacketListenerPriority.HIGHEST);
+    }
 
-                if (packet.getType() == PacketType.Play.Server.SET_SLOT) {
-                    ItemStack item = packet.getItemModifier().read(0).clone();
-                    packet.getItemModifier().write(0, handle(item));
-                } else if (packet.getType() == PacketType.Play.Server.WINDOW_ITEMS) {
-                    List<ItemStack> previousItems = packet.getLists(BukkitConverters.getItemStackConverter()).read(0);
-                    List<ItemStack> newItems = new ArrayList<>();
-
-                    for (ItemStack item : previousItems) {
-                        newItems.add(handle(item));
-                    }
-
-                    packet.getLists(BukkitConverters.getItemStackConverter()).write(0, newItems);
-                }
-
-                event.setPacket(packet);
-            }
-        });
+    @Override
+    public void onPacketSend(@NotNull PacketSendEvent event) {
+        if (event.getPacketType() == PacketType.Play.Server.SET_SLOT) {
+            WrapperPlayServerSetSlot wrapper = new WrapperPlayServerSetSlot(event);
+            setAuthor(wrapper.getItem());
+        } else if (event.getPacketType() == PacketType.Play.Server.WINDOW_ITEMS) {
+            WrapperPlayServerWindowItems wrapper = new WrapperPlayServerWindowItems(event);
+            wrapper.getItems().forEach(this::setAuthor);
+            wrapper.getCarriedItem().ifPresent(this::setAuthor);
+        } else if (event.getPacketType() == PacketType.Play.Server.SET_CURSOR_ITEM) {
+            WrapperPlayServerSetCursorItem wrapper = new WrapperPlayServerSetCursorItem(event);
+            setAuthor(wrapper.getStack());
+        }
     }
 
     @Override
@@ -75,50 +71,35 @@ public final class OnlineBook extends RpFunction {
 
     @Override
     public void disable() {
-        ProtocolLibrary.getProtocolManager().removePacketListeners(plugin);
+        if (this.packetListener != null) {
+            PacketEvents.getAPI().getEventManager().unregisterListener(this.packetListener);
+        }
+
         this.online.clear();
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        this.onEvent(event);
+        this.online.add(event.getPlayer().getName());
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        this.onEvent(event);
+        this.online.remove(event.getPlayer().getName());
     }
 
-    private void onEvent(PlayerEvent event) {
-        if (!this.isFunctionEnabled()) {
-            return;
-        }
-
-        this.online.add(event.getPlayer().getName());
-    }
-
-    private ItemStack handle(ItemStack item) {
-        if (item != null && item.getType() == Material.WRITTEN_BOOK) {
-            BookMeta book = (BookMeta) item.getItemMeta();
-
-            if (book != null) {
+    private void setAuthor(ItemStack item) {
+        if (item != null && item.getType() == ItemTypes.WRITTEN_BOOK) {
+            item.getComponent(ComponentTypes.WRITTEN_BOOK_CONTENT).ifPresent(book -> {
                 String author = book.getAuthor();
 
-                if (author != null) {
-                    item = item.clone();
+                String postfix = this.online.contains(author)
+                        ? this.configValues.getOnlineBookOnline()
+                        : this.configValues.getOnlineBookOffline();
 
-                    String postfix = this.online.contains(author)
-                            ? this.configValues.getOnlineBookOnline()
-                            : this.configValues.getOnlineBookOffline();
-
-                    book.setAuthor(author + postfix);
-                    item.setItemMeta(book);
-
-                    return item;
-                }
-            }
+                book.setAuthor(author + postfix);
+            });
         }
-
-        return item;
     }
+
 }
