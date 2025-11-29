@@ -23,7 +23,7 @@ import t.me.tom8hawk.config.ConfigValues;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class OnlineBook extends RpFunction implements PacketListener {
+public final class OnlineBook implements RpFunction, PacketListener {
 
     private final RPplugin plugin;
     private final ConfigValues configValues;
@@ -65,7 +65,7 @@ public final class OnlineBook extends RpFunction implements PacketListener {
     }
 
     @Override
-    boolean isFunctionEnabled() {
+    public boolean isFunctionEnabled() {
         return this.plugin.getConfigValues().isOnlineBookEnabled();
     }
 

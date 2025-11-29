@@ -15,7 +15,7 @@ import t.me.tom8hawk.config.ConfigValues;
 import t.me.tom8hawk.utils.Colorizer;
 import t.me.tom8hawk.utils.StringUtils;
 
-public final class HideTags extends RpFunction {
+public final class HideTags implements RpFunction {
 
     private static final String TEAM_NAME = "HideTags";
 

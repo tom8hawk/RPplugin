@@ -2,12 +2,12 @@ package t.me.tom8hawk.function;
 
 import org.bukkit.event.Listener;
 
-public abstract class RpFunction implements Listener {
+public interface RpFunction extends Listener {
 
-    abstract void init();
+    void init();
 
-    abstract boolean isFunctionEnabled();
+    boolean isFunctionEnabled();
 
-    abstract void disable();
+    void disable();
 
 }
