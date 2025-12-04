@@ -53,6 +53,7 @@ public final class ConfigValues {
 
     private void setupTry(final FileConfiguration config) {
         final ConfigurationSection section = config.getConfigurationSection("TRY");
+        this.tryPermission = section.getBoolean("permission");
         this.tryDistance = section.getInt("distance");
         this.trySuccess = this.getColorized(section, "success");
         this.tryFailed = this.getColorized(section, "failed");
@@ -60,6 +61,7 @@ public final class ConfigValues {
 
     private void setupMe(final FileConfiguration config) {
         final ConfigurationSection section = config.getConfigurationSection("ME");
+        this.mePermission = section.getBoolean("permission");
         this.meDistance = section.getInt("distance");
         this.meFormat = this.getColorized(section, "format");
     }
