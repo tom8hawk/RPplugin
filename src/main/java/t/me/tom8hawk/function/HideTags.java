@@ -13,6 +13,7 @@ import t.me.tom8hawk.DatabaseManager;
 import t.me.tom8hawk.RPplugin;
 import t.me.tom8hawk.config.ConfigValues;
 import t.me.tom8hawk.utils.Colorizer;
+import t.me.tom8hawk.utils.PlaceholdersUtil;
 import t.me.tom8hawk.utils.StringUtil;
 
 import java.util.Collections;
@@ -122,11 +123,12 @@ public final class HideTags implements RpFunction {
         }
 
         if (event.getRightClicked() instanceof Player) {
-            final String playerName = ((Player) event.getRightClicked()).getDisplayName();
+            final Player clicked = (Player) event.getRightClicked();
+            final String clickedPlayerName = clicked.getDisplayName();
 
-            final Component message = Colorizer.parse(
-                    StringUtil.fastReplace(this.configValues.getHideTagsActionbar(), "%name", playerName)
-            );
+            final Component message = Colorizer.parse(PlaceholdersUtil.setPlaceholders(clicked,
+                    StringUtil.fastReplace(this.configValues.getHideTagsActionbar(), "%name", clickedPlayerName)
+            ));
 
             event.getPlayer().sendActionBar(message);
         }
