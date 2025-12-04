@@ -52,7 +52,6 @@ public final class NicknameCommandHandler extends CommandHandler {
                 hideTags.unhideName(playerSender);
                 databaseManager.addVisibleNickname(playerSender.getUniqueId());
 
-                this.plugin.getHideTags().unhideName(playerSender);
                 sender.sendMessage(this.configValues.getShownTagMessage());
             } else if (args[0].equalsIgnoreCase("hide")) {
 
@@ -61,10 +60,9 @@ public final class NicknameCommandHandler extends CommandHandler {
                     return true;
                 }
 
-                hideTags.hideName(playerSender);
+                hideTags.hideName(playerSender, true);
                 databaseManager.removeVisibleNickname(playerSender.getUniqueId());
 
-                this.plugin.getHideTags().hideName(playerSender);
                 sender.sendMessage(this.configValues.getHiddenTagMessage());
             }
 
