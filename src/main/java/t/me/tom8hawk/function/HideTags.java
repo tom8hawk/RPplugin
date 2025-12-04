@@ -13,7 +13,7 @@ import t.me.tom8hawk.DatabaseManager;
 import t.me.tom8hawk.RPplugin;
 import t.me.tom8hawk.config.ConfigValues;
 import t.me.tom8hawk.utils.Colorizer;
-import t.me.tom8hawk.utils.StringUtils;
+import t.me.tom8hawk.utils.StringUtil;
 
 import java.util.Collections;
 import java.util.Set;
@@ -115,7 +115,7 @@ public final class HideTags implements RpFunction {
             final String playerName = ((Player) event.getRightClicked()).getDisplayName();
 
             final Component message = Colorizer.parse(
-                    StringUtils.fastReplace(this.configValues.getHideTagsActionbar(), "%name", playerName)
+                    StringUtil.fastReplace(this.configValues.getHideTagsActionbar(), "%name", playerName)
             );
 
             event.getPlayer().sendActionBar(message);

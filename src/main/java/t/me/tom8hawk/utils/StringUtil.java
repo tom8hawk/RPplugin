@@ -3,7 +3,7 @@ package t.me.tom8hawk.utils;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class StringUtils {
+public class StringUtil {
 
     public static String fastReplace(String string, String target, String replacement) {
         if (string == null) {
