@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import t.me.tom8hawk.DatabaseManager;
 import t.me.tom8hawk.RPplugin;
 import t.me.tom8hawk.config.ConfigValues;
-import t.me.tom8hawk.function.HideTags;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,14 +15,11 @@ public final class NicknameCommandHandler extends CommandHandler {
 
     private final ConfigValues configValues;
 
-    private final HideTags hideTags;
-
     private final DatabaseManager databaseManager;
 
     public NicknameCommandHandler(RPplugin plugin) {
         super(plugin);
         this.configValues = plugin.getConfigValues();
-        this.hideTags = plugin.getHideTags();
         this.databaseManager = plugin.getDatabaseManager();
     }
 
@@ -49,7 +45,7 @@ public final class NicknameCommandHandler extends CommandHandler {
                     return true;
                 }
 
-                hideTags.unhideName(playerSender);
+                plugin.getHideTags().unhideName(playerSender);
                 databaseManager.addVisibleNickname(playerSender.getUniqueId());
 
                 sender.sendMessage(this.configValues.getShownTagMessage());
@@ -60,7 +56,7 @@ public final class NicknameCommandHandler extends CommandHandler {
                     return true;
                 }
 
-                hideTags.hideName(playerSender, true);
+                plugin.getHideTags().hideName(playerSender, true);
                 databaseManager.removeVisibleNickname(playerSender.getUniqueId());
 
                 sender.sendMessage(this.configValues.getHiddenTagMessage());

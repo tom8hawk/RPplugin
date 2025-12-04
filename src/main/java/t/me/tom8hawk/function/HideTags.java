@@ -25,13 +25,13 @@ public final class HideTags implements RpFunction {
     private final RPplugin plugin;
     private final ConfigValues configValues;
     private final DatabaseManager dbManager;
-    private final Team hiddenTeam;
+
+    private Team hiddenTeam;
 
     public HideTags(RPplugin plugin) {
         this.plugin = plugin;
         this.configValues = plugin.getConfigValues();
         this.dbManager = plugin.getDatabaseManager();
-        this.hiddenTeam = this.setupTeam();
     }
 
     @Override
@@ -40,7 +40,8 @@ public final class HideTags implements RpFunction {
             return;
         }
 
-        Bukkit.getOnlinePlayers().forEach(this::unhideName);
+        this.hiddenTeam = this.setupTeam();
+        Bukkit.getOnlinePlayers().forEach(this::hideName);
         Bukkit.getPluginManager().registerEvents(this, this.plugin);
     }
 
@@ -51,8 +52,13 @@ public final class HideTags implements RpFunction {
 
     @Override
     public void disable() {
-        Set<String> hiddenPlayers = Collections.unmodifiableSet(hiddenTeam.getEntries());
-        hiddenPlayers.forEach(hiddenTeam::removeEntry);
+        if (this.hiddenTeam == null) return;
+
+        Set<String> hiddenPlayers = Collections.unmodifiableSet(this.hiddenTeam.getEntries());
+        hiddenPlayers.forEach(this.hiddenTeam::removeEntry);
+
+        this.hiddenTeam.unregister();
+        this.hiddenTeam = null;
     }
 
     private Team setupTeam() {
@@ -74,6 +80,10 @@ public final class HideTags implements RpFunction {
     private void updateNames(final Player target, boolean hide, boolean force) {
         if (!this.isFunctionEnabled()) {
             return;
+        }
+
+        if (this.hiddenTeam == null) {
+            throw new IllegalStateException("hiddenTeam cannot be null!");
         }
 
         if (hide) {
