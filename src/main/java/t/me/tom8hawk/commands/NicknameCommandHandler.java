@@ -13,6 +13,10 @@ import java.util.List;
 
 public final class NicknameCommandHandler extends CommandHandler {
 
+    private static final String SHOW_PERMISSION = "rppl.nick.show";
+
+    private static final String HIDE_PERMISSION = "rppl.nick.hide";
+
     private final ConfigValues configValues;
 
     private final DatabaseManager databaseManager;
@@ -44,7 +48,7 @@ public final class NicknameCommandHandler extends CommandHandler {
         if (args.length != 0) {
             if (args[0].equalsIgnoreCase("show")) {
 
-                if (!sender.hasPermission("rppl.nick.show")) {
+                if (!sender.hasPermission(SHOW_PERMISSION)) {
                     sender.sendMessage(this.configValues.getNoPermissionMessage());
                     return true;
                 }
@@ -55,7 +59,7 @@ public final class NicknameCommandHandler extends CommandHandler {
                 sender.sendMessage(this.configValues.getShownTagMessage());
             } else if (args[0].equalsIgnoreCase("hide")) {
 
-                if (!sender.hasPermission("rppl.nick.hide")) {
+                if (!sender.hasPermission(HIDE_PERMISSION)) {
                     sender.sendMessage(this.configValues.getNoPermissionMessage());
                     return true;
                 }
@@ -77,11 +81,11 @@ public final class NicknameCommandHandler extends CommandHandler {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
 
-        if (sender.hasPermission("rppl.nick.show")) {
+        if (sender.hasPermission(SHOW_PERMISSION)) {
             completions.add("show");
         }
 
-        if (sender.hasPermission("rppl.nick.hide")) {
+        if (sender.hasPermission(HIDE_PERMISSION)) {
             completions.add("hide");
         }
 

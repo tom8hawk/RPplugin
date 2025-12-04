@@ -18,6 +18,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public final class RpCommandHandler extends CommandHandler {
 
+    private static final String TRY_PERMISSION = "rppl.try";
+
+    private static final String ME_PERMISSION = "rppl.me";
+
     private final ConfigValues configValues;
 
     private final ThreadLocalRandom random;
@@ -47,7 +51,7 @@ public final class RpCommandHandler extends CommandHandler {
 
         if (label.equalsIgnoreCase("try")) {
 
-            if (configValues.isTryPermission() && !sender.hasPermission("rppl.try")) {
+            if (configValues.isTryPermission() && !sender.hasPermission(TRY_PERMISSION)) {
                 sender.sendMessage(this.configValues.getNoPermissionMessage());
                 return true;
             }
@@ -58,7 +62,7 @@ public final class RpCommandHandler extends CommandHandler {
                     : this.configValues.getTryFailed();
         } else {
 
-            if (configValues.isMePermission() && !sender.hasPermission("rppl.me")) {
+            if (configValues.isMePermission() && !sender.hasPermission(ME_PERMISSION)) {
                 sender.sendMessage(this.configValues.getNoPermissionMessage());
                 return true;
             }
