@@ -35,6 +35,10 @@ public final class NicknameCommandHandler extends CommandHandler {
             return true;
         }
 
+        if (!this.plugin.getHideTags().isFunctionEnabled()) {
+            return true;
+        }
+
         final Player playerSender = (Player) sender;
 
         if (args.length != 0) {
