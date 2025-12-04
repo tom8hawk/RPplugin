@@ -19,6 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public final class RpCommandHandler extends CommandHandler {
 
     private final ConfigValues configValues;
+
     private final ThreadLocalRandom random;
 
     public RpCommandHandler(RPplugin plugin) {

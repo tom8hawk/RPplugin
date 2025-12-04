@@ -31,22 +31,22 @@ public final class RPplugin extends JavaPlugin {
     }
 
     public void setupFunctions() {
-        hideTags = new HideTags(this);
-        hideTags.init();
+        this.hideTags = new HideTags(this);
+        this.hideTags.init();
 
         if (Bukkit.getPluginManager().isPluginEnabled("packetevents")) {
-            onlineBook = new OnlineBook(this);
-            onlineBook.init();
+            this.onlineBook = new OnlineBook(this);
+            this.onlineBook.init();
         } else {
             super.getLogger().info(() -> "packetevents не найден!");
         }
     }
 
     public void disableFunctions() {
-        hideTags.disable();
+        this.hideTags.disable();
 
-        if (onlineBook != null) {
-            onlineBook.disable();
+        if (this.onlineBook != null) {
+            this.onlineBook.disable();
         }
     }
 
