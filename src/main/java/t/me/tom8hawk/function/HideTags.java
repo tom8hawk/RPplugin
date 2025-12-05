@@ -16,9 +16,6 @@ import t.me.tom8hawk.utils.Colorizer;
 import t.me.tom8hawk.utils.PlaceholdersUtil;
 import t.me.tom8hawk.utils.StringUtil;
 
-import java.util.Collections;
-import java.util.Set;
-
 public final class HideTags implements RpFunction {
 
     private static final String TEAM_NAME = "HideTags";
@@ -55,30 +52,28 @@ public final class HideTags implements RpFunction {
     public void disable() {
         if (this.hiddenTeam == null) return;
 
-        Set<String> hiddenPlayers = Collections.unmodifiableSet(this.hiddenTeam.getEntries());
-        hiddenPlayers.forEach(this.hiddenTeam::removeEntry);
-
         this.hiddenTeam.unregister();
         this.hiddenTeam = null;
     }
 
     private Team setupTeam() {
-        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        Scoreboard hiddenScoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 
-        Team team = scoreboard.getTeam(TEAM_NAME);
+        Team team = hiddenScoreboard.getTeam(TEAM_NAME);
         if (team == null) {
-            team = scoreboard.registerNewTeam(TEAM_NAME);
+            team = hiddenScoreboard.registerNewTeam(TEAM_NAME);
         }
 
+        team.setCanSeeFriendlyInvisibles(false);
         team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
         return team;
     }
 
-    private void updateNames(final Player target, boolean hide) {
-        this.updateNames(target, hide, false);
+    private void updateScoreboard(final Player target, boolean hide) {
+        this.updateScoreboard(target, hide, false);
     }
 
-    private void updateNames(final Player target, boolean hide, boolean force) {
+    private void updateScoreboard(final Player target, boolean hide, boolean force) {
         if (!this.isFunctionEnabled()) {
             return;
         }
@@ -89,31 +84,31 @@ public final class HideTags implements RpFunction {
 
         if (hide) {
             if (!force) {
-                if (this.hiddenTeam.hasEntry(target.getName())) {
+                if (this.hiddenTeam.hasPlayer(target)) {
                     return;
                 }
 
-                if (this.configValues.isDefaultHidden() && !this.dbManager.isNicknameVisible(target.getUniqueId())) {
+                if (this.configValues.isDefaultHidden() && this.dbManager.isNicknameVisible(target.getUniqueId())) {
                     return;
                 }
             }
 
-            this.hiddenTeam.addEntry(target.getName());
+            this.hiddenTeam.addPlayer(target);
         } else {
-            this.hiddenTeam.removeEntry(target.getName());
+            this.hiddenTeam.removePlayer(target);
         }
     }
 
     public void hideName(final Player target, boolean force) {
-        this.updateNames(target, true, force);
+        this.updateScoreboard(target, true, force);
     }
 
     public void hideName(final Player target) {
-        this.updateNames(target, true);
+        this.updateScoreboard(target, true);
     }
 
     public void unhideName(final Player target) {
-        this.updateNames(target, false);
+        this.updateScoreboard(target, false);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -136,10 +131,7 @@ public final class HideTags implements RpFunction {
 
     @EventHandler
     public void onJoin(final PlayerJoinEvent event) {
-        if (!this.isFunctionEnabled()) {
-            return;
-        }
-
         this.hideName(event.getPlayer());
     }
+
 }
